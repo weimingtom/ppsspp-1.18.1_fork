@@ -34,7 +34,9 @@ RM := rm -rf
 
 CCFLAGS :=
 
-CCFLAGS += -g 
+#CCFLAGS += -g 
+#-O3 -g0 some games will crash
+CCFLAGS += -O0 -g0
 CCFLAGS += -D_DEBUG
 
 ifeq ($(MIYOO),4)
