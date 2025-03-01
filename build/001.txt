@@ -1,0 +1,1 @@
+https://github.com/knulli-cfw/distribution/blob/bc90dbc9a8c785d7265b5fa3d3a8b976545ba45d/board/batocera/allwinner/a133/patches/ppsspp/001-glStringi-workaround.patch

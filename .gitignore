@@ -67,8 +67,8 @@ PPSSPPControls.dat
 .gradle
 .idea
 *.iml
-build
-/build*/
+#build
+#/build*/
 versionname.txt
 versioncode.txt
 android/.cxx
@@ -134,7 +134,7 @@ CMakeFiles
 
 # Clangd 
 .cache/
-build
+#build
 libretro/obj/local
 
 ppsspp_retroachievements.dat
