@@ -25,4 +25,5 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 ## TODO  
 * Remove ext\armips\Tests\Core\Includes\??asm  
 * Change to -O3 -g0
+* Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
  
