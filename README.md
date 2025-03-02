@@ -19,7 +19,7 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 
 ## Bugs  
 * Too slow
-* imouto.iso (实妹相伴的大泉君psp移植版) not work (black screen and loop, not exited)  
+* imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audo delay) and sometimes crash  
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
 
 ## TODO  
