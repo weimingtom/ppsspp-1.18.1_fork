@@ -10,6 +10,17 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * make clean && make -j8  
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; cmake ..; make -j8  
 
+## How to build for retropie / Raspberry Pi Zero 2W
+* sudo nano /etc/dphys-swapfile  
+* ./b.sh --rpi  
+* cd build; cmake ..; make  
+```
+在树莓派上编译ppsspp太慢，似乎是因为retropie交换分区太小导致编译卡在某些cpp文件上，
+我的做法是这样：sudo nano /etc/dphys-swapfile，从100改成1024，
+然后重启生效，这样就能稍微好一点，避免编译被卡住——我觉得交换分区会写到tf卡，
+虽然可行但会稍微会慢一些
+```
+
 ## (WIP) How to build for Trimui Smart Pro
 * Modify Makefile for cross compile toolchain  
 * make MIYOO=2 clean && make MIYOO=2 -j8
