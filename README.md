@@ -6,9 +6,9 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
 ## References  
-* (glstringi patch for Allwinners A133) https://github.com/knulli-cfw/distribution/blob/bc90dbc9a8c785d7265b5fa3d3a8b976545ba45d/board/batocera/allwinner/a133/patches/ppsspp/001-glStringi-workaround.patch
-see https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/build/001.txt
-* (cmake build cross compile arguments) https://github.com/Ruka-CFW/s30-cfw/blob/main/buildroot/package/emulators/ppsspp/ppsspp.mk  
+* (glstringi patch for Allwinners A133) https://github.com/knulli-cfw/distribution/blob/bc90dbc9a8c785d7265b5fa3d3a8b976545ba45d/board/batocera/allwinner/a133/patches/ppsspp/001-glStringi-workaround.patch  
+see https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/build/001.txt  
+* (cmake build cross compile arguments) https://github.com/Ruka-CFW/s30-cfw/blob/main/buildroot/package/emulators/ppsspp/ppsspp.mk   
 https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/build/ppsspp_s30-cfw.mk  
 https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/build/ppsspp_v2.mk  
 https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/build/ppsspp_v0.mk  
