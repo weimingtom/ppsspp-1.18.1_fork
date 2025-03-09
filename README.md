@@ -34,7 +34,24 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
 
 ## TODO  
-* Remove ext\armips\Tests\Core\Includes\??asm  
+* (done) Remove ext\armips\Tests\Core\Includes\??asm  
 * Change to -O3 -g0
+```
+Makefile
+#-O3 -g0 some games will crash
+CCFLAGS += -O0 -g3
+```
 * Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
+* (changed ? not sync) assets/redump.csv  
+
+# Build ffmpeg    
+```
+cd ffmpeg  
+PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
+PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
+```
+
+# sleep bug  
+* UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
+
  
