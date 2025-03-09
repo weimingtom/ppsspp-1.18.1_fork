@@ -5,6 +5,19 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
+## References  
+* (TODO) https://github.com/OtherCrashOverride/ppsspp-go2  
+https://github.com/OtherCrashOverride/ppsspp-go2/issues/3  
+https://github.com/OtherCrashOverride/ppsspp-go2/blob/master/ext/native/gfx_es2/gpu_features.cpp  
+https://github.com/christianhaitian/ppsspp-go2/compare/master...OtherCrashOverride%3Appsspp-go2%3Amaster  
+https://github.com/christianhaitian/ppsspp-go2  
+* (Seems not support no X11) https://github.com/ryanfortner/build-ppsspp-rpi  
+https://github.com/ryanfortner/build-ppsspp-rpi/releases  
+```
+see ppsspp_1.12.3_armhf.zip
+测试过build-ppsspp-rpi这个版本无法在非X11环境下运行
+```
+
 ## (WIP) How to build for PC xubuntu 20.04  
 * sudo apt install libsdl2-dev cmake
 * make clean && make -j8  
