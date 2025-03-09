@@ -1,11 +1,21 @@
-# 0==xubuntu 20.04 64bit
+# 5==waveshare gpm280z2, raspberry pi zero2w
 # 4==raspberry pi 4b 64bit, 1.18.1
+# 3==trimui brick
+# 2==trimui smart pro
+# 1==miyoo a30
+# 0==xubuntu 20.04 64bit
 MIYOO:=0
 
-#Build ffmpeg linux aarch64 .a static library:  
+#Build ffmpeg linux aarch64 and armhf .a static library:  
 #PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
+#PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 
-ifeq ($(MIYOO),4)
+ifeq ($(MIYOO),5)
+CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
+RANLIB := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ranlib
+else ifeq ($(MIYOO),4)
 CC := gcc
 CPP := g++
 AR := ar cru
@@ -39,7 +49,8 @@ CCFLAGS :=
 CCFLAGS += -O0 -g3
 CCFLAGS += -D_DEBUG
 
-ifeq ($(MIYOO),4)
+ifeq ($(MIYOO),5)
+else ifeq ($(MIYOO),4)
 else ifeq ($(MIYOO),2)
 else ifeq ($(MIYOO),1)
 else
@@ -70,15 +81,17 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),4)
+ifeq ($(MIYOO),5)
+CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
+CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1
+else ifeq ($(MIYOO),4)
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 else ifeq ($(MIYOO),2)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 else ifeq ($(MIYOO),1)
 CCFLAGS += -DNO_SDLVULKAN=1 #
-CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
-CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
-CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1
 else
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 endif
@@ -137,7 +150,13 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),4)
+ifeq ($(MIYOO),5)
+#FIXME:????-march
+CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/armv7/include  
+CCFLAGS += -I./include/vc/include
+CCFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
+else ifeq ($(MIYOO),4)
 CCFLAGS += -isystem /usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include
 #FIXME:raspberry pi
@@ -151,7 +170,6 @@ CCFLAGS += -I/home/wmt/work_trimui/usr/include
 else ifeq ($(MIYOO),1)
 CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/armv7/include  
-CCFLAGS += -I./include/vc/include
 CCFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
 else
 CCFLAGS += -isystem /usr/include/SDL2
@@ -198,7 +216,14 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),4)
+ifeq ($(MIYOO),5)
+LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
+LDFLAGS += ./ffmpeg/linux/armv7/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/armv7/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/armv7/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/armv7/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/armv7/lib/libavutil.a
+else ifeq ($(MIYOO),4)
 #for raspberry pi 4b
 LDFLAGS += -L/opt/vc/lib -lGLESv2 -lEGL
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libSM.so 
@@ -229,7 +254,7 @@ else ifeq ($(MIYOO),1)
 #LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libEGL.so 
 #LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libGLESv2.so 
 #for miyoo a30
-LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
+LDFLAGS += -lSDL2 -lz -lGLESv2 -lEGL -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavcodec.a 
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libswresample.a 
