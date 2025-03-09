@@ -12,7 +12,7 @@ lib*/*.a
 *.exp
 *.h.c
 *.ilk
-*.pc
+#*.pc
 *.pdb
 *.so
 *.so.*
