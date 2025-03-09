@@ -10,7 +10,7 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * make clean && make -j8  
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; cmake ..; make -j8  
 
-## How to build for retropie / Raspberry Pi Zero 2W
+## (Not good) How to host build for retropie (Raspberry Pi Zero 2W, Waveshare GPM280Z2)  
 * sudo nano /etc/dphys-swapfile  
 * ./b.sh --rpi  
 * cd build; cmake ..; make  
@@ -19,6 +19,17 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 我的做法是这样：sudo nano /etc/dphys-swapfile，从100改成1024，
 然后重启生效，这样就能稍微好一点，避免编译被卡住——我觉得交换分区会写到tf卡，
 虽然可行但会稍微会慢一些
+```
+
+## How to cross compile build for retropie (Raspberry Pi Zero 2W, Waveshare GPM280Z2)    
+* make MIYOO=5 clean && make MIYOO=5 -j8
+```
+我尝试直接在树莓派Zero2W上直接编译PPSSPP，即便我加大了交换分区的大小，
+依然不成功——如果是编译带调试信息的debug版，会在最后的链接时候卡住编译不了——
+所以我最终还是改用交叉编译，不过我也不是简单的交叉编译，
+我是用MIYOO A30的工具链交叉编译（同样是armhf），
+在此基础上链接树莓派特有的libbcm_host库，
+我测试过可以用这种不太好的方法链接出能正常运行的elf可执行文件
 ```
 
 ## (WIP) How to build for Trimui Smart Pro
