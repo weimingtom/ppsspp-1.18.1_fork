@@ -51,7 +51,5 @@ PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm6
 PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 ```
 
-# sleep bug  
-* UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
-
- 
+# sleep bug for rpi32 (rpizero2w), waveshare gpm280z2     
+* see UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
