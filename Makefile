@@ -17,7 +17,7 @@ AR  := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gn
 RANLIB := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-ranlib
 else ifeq ($(MIYOO),1)
 CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
-CXX := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
 AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
 RANLIB := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ranlib
 else
@@ -36,7 +36,7 @@ CCFLAGS :=
 
 #CCFLAGS += -g 
 #-O3 -g0 some games will crash
-CCFLAGS += -O0 -g0
+CCFLAGS += -O0 -g3
 CCFLAGS += -D_DEBUG
 
 ifeq ($(MIYOO),4)
@@ -76,6 +76,9 @@ else ifeq ($(MIYOO),2)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 else ifeq ($(MIYOO),1)
 CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
+CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1
 else
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 endif
@@ -148,6 +151,7 @@ CCFLAGS += -I/home/wmt/work_trimui/usr/include
 else ifeq ($(MIYOO),1)
 CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/armv7/include  
+CCFLAGS += -I./include/vc/include
 CCFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
 else
 CCFLAGS += -isystem /usr/include/SDL2
@@ -220,10 +224,12 @@ LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
 else ifeq ($(MIYOO),1)
-LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libSDL2.a 
-LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libz.a
-LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libEGL.so 
-LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libGLESv2.so 
+#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libSDL2.a 
+#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libz.a
+#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libEGL.so 
+#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libGLESv2.so 
+#for miyoo a30
+LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavcodec.a 
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libswresample.a 

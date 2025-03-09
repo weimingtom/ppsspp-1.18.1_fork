@@ -53,7 +53,7 @@ UWP/.vs
 # For Mac
 .DS_Store
 PPSSPPSDL.app
-include/glslang/build_info.h
+#include/glslang/build_info.h
 
 # For ppsspp.ini, etc.
 ppsspp.ini
@@ -81,7 +81,7 @@ Memstick
 /memstick*
 Cheats
 
-/git-version.cpp
+#/git-version.cpp
 /git-version-*.tmp
 
 .pspsh.hist
@@ -121,7 +121,7 @@ debian/ppsspp/
 # Libretro build
 *.o
 *.tmp
-*.a
+#*.a
 
 # YouCompleteMe file
 .ycm_extra_conf.pyc

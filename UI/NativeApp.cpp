@@ -1198,8 +1198,12 @@ void NativeFrame(GraphicsContext *graphicsContext) {
 		// TODO: This should move into NativeFrame. Also, it's only necessary in MAILBOX or IMMEDIATE presentation modes.
 		double diffTime = time_now_d() - startTime;
 		int sleepTime = (int)(1000.0 / refreshRate) - (int)(diffTime * 1000.0);
+#if !NO_NATIVE_FRAME_SLEEP
 		if (sleepTime > 0)
 			sleep_ms(sleepTime);
+#else
+sleep_ms(1);
+#endif
 	}
 }
 

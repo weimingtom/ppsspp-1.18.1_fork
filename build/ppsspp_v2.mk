@@ -1,5 +1,6 @@
 #cd ffmpeg
 #PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
+#PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 
 BR2_PACKAGE_RECALBOX_TARGETGROUP_ROCKCHIP=y
 TARGET_CC=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-gcc
