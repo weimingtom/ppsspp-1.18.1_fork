@@ -44,7 +44,7 @@ CCFLAGS += -O0 -g3
 * Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
 * (changed ? not sync) assets/redump.csv  
 
-# Build ffmpeg    
+# Build ffmpeg, only for official ppsspp code      
 ```
 cd ffmpeg  
 PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
