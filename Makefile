@@ -11,8 +11,8 @@ MIYOO:=0
 #PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 
 ifeq ($(MIYOO),5)
-CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
-CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
+CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
 AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
 RANLIB := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ranlib
 else ifeq ($(MIYOO),4)
@@ -46,7 +46,11 @@ CCFLAGS :=
 
 #CCFLAGS += -g 
 #-O3 -g0 some games will crash
-CCFLAGS += -O0 -g3
+ifeq ($(MIYOO),5)
+CCFLAGS += -O3 -g0
+else
+CCFLAGS += -O0 -g0
+endif
 CCFLAGS += -D_DEBUG
 
 ifeq ($(MIYOO),5)
@@ -1480,5 +1484,8 @@ test:
 
 debug:
 	gdb ./PPSSPPSDL
+
+install5:
+	cp PPSSPPSDL /media/wmt/retropie/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/.
 
 
