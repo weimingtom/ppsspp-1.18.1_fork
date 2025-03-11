@@ -157,7 +157,7 @@ CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 ifeq ($(MIYOO),5)
 #FIXME:????-march
 CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
-CCFLAGS += -isystem ./ffmpeg/linux/armv7/include  
+CCFLAGS += -isystem ./ffmpeg/linux/armv7rpi32/include  
 CCFLAGS += -I./include/vc/include
 CCFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
 else ifeq ($(MIYOO),4)
@@ -215,18 +215,18 @@ CCFLAGS += -fPIC
 
 LDFLAGS := 
 
-LDFLAGS += -funsafe-math-optimizations 
+#LDFLAGS += -funsafe-math-optimizations 
 LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
 ifeq ($(MIYOO),5)
 LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
-LDFLAGS += ./ffmpeg/linux/armv7/lib/libavformat.a 
-LDFLAGS += ./ffmpeg/linux/armv7/lib/libavcodec.a 
-LDFLAGS += ./ffmpeg/linux/armv7/lib/libswresample.a 
-LDFLAGS += ./ffmpeg/linux/armv7/lib/libswscale.a 
-LDFLAGS += ./ffmpeg/linux/armv7/lib/libavutil.a
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavutil.a
 else ifeq ($(MIYOO),4)
 #for raspberry pi 4b
 LDFLAGS += -L/opt/vc/lib -lGLESv2 -lEGL

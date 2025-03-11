@@ -80,7 +80,14 @@ CCFLAGS += -O0 -g3
 # Build ffmpeg, only for official ppsspp code      
 ```
 cd ffmpeg  
+
+# for trimui smart pro
 PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
+
+# for gpm280z2. linux_rpi32.sh is a mod from linux_rpi.sh
+PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_rpi32.sh
+
+# not tested
 PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 ```
 
