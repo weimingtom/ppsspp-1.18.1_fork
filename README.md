@@ -52,6 +52,11 @@ see ppsspp_1.12.3_armhf.zip
 我是用MIYOO A30的工具链交叉编译（同样是armhf），
 在此基础上链接树莓派特有的libbcm_host库，
 我测试过可以用这种不太好的方法链接出能正常运行的elf可执行文件
+
+之前我在树莓派zero2w上跑PPSSPP卡住，好像是因为我用retropie
+里面的文件管理器mc启动，
+但mc会占用cpu百分之百，解决办法写一个sh然后在后面加个&，
+这样mc就不会占用太多cpu了——虽然还是卡
 ```
 
 ## (WIP) How to build for Trimui Smart Pro
