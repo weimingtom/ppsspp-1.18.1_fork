@@ -747,7 +747,7 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 		g_QuitRequested = 1;
 		break;
 
-#if !defined(MOBILE_DEVICE)
+#if !defined(MOBILE_DEVICE) && !USE_HIDE_SDL_SHOWCURSOR
 	case SDL_WINDOWEVENT:
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_SIZE_CHANGED:  // better than RESIZED, more general
@@ -827,7 +827,28 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 			}
 			key.keyCode = mapped->second;
 			key.deviceId = DEVICE_ID_KEYBOARD;
+printf("<<<<<<<<<<<<SDL_KEYDOWN, %d, %d\n", event.key.keysym.sym, key.keyCode);
 			NativeKey(key);
+
+#if 0
+//only for test
+//P:44->Down:20
+if (key.keyCode == 44) { //Press Key P to emulate press key Down Arrow
+	std::thread t([]() {
+		KeyInput key;
+		key.flags = KEY_DOWN;
+		key.keyCode = (InputKeyCode)20;
+		key.deviceId = DEVICE_ID_KEYBOARD;
+		NativeKey(key);
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));		
+		key.flags = KEY_UP;
+		key.keyCode = (InputKeyCode)20;
+		key.deviceId = DEVICE_ID_KEYBOARD;
+		NativeKey(key);
+	});
+	t.detach();
+}
+#endif
 
 #ifdef _DEBUG
 			if (k == SDLK_F7) {
@@ -861,6 +882,7 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 		}
 	case SDL_KEYUP:
 		{
+printf("<<<<<<<<<<<<SDL_KEYUP, %d\n", event.key.keysym.sym);
 			if (event.key.repeat > 0) { break;}
 			int k = event.key.keysym.sym;
 			KeyInput key;
@@ -1121,7 +1143,7 @@ void UpdateTextFocus() {
 }
 
 void UpdateSDLCursor() {
-#if !defined(MOBILE_DEVICE)
+#if !defined(MOBILE_DEVICE) && !USE_HIDE_SDL_SHOWCURSOR
 	if (lastUIState != GetUIState()) {
 		lastUIState = GetUIState();
 		if (lastUIState == UISTATE_INGAME && g_Config.UseFullScreen() && !g_Config.bShowTouchControls)
@@ -1272,10 +1294,25 @@ int main(int argc, char *argv[]) {
 #if defined(MOBILE_DEVICE) && !PPSSPP_PLATFORM(SWITCH)
 	mode |= SDL_WINDOW_FULLSCREEN;
 #elif defined(USING_FBDEV) || PPSSPP_PLATFORM(SWITCH) || NO_SDLVULKAN
+#if !PC_NO_FULLSCREEN //added
 	mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 #else
+//not run here, pc, skip, added
+mode &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
+mode &= ~SDL_WINDOW_FULLSCREEN;
+//mode |= SDL_WINDOW_RESIZABLE;
+#endif
+
+#else
+#if !PC_NO_FULLSCREEN //added
 	mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 //	mode |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+#else
+//pc, skip, added
+mode &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
+mode &= ~SDL_WINDOW_FULLSCREEN;
+//mode |= SDL_WINDOW_RESIZABLE;
+#endif
 #endif
 
 	if (mode & SDL_WINDOW_FULLSCREEN_DESKTOP) {
@@ -1369,6 +1406,11 @@ int main(int argc, char *argv[]) {
 		g_Config.iGPUBackend = (int)GPUBackend::OPENGL;
 	}
 
+#if PC_NO_FULLSCREEN //added
+	w = 480;
+	h = 272;
+#endif
+
 	std::string error_message;
 	if (g_Config.iGPUBackend == (int)GPUBackend::OPENGL) {
 		SDLGLGraphicsContext *glctx = new SDLGLGraphicsContext();
@@ -1457,7 +1499,7 @@ int main(int argc, char *argv[]) {
 	// OK, we have a valid graphics backend selected. Let's clear the failures.
 	g_Config.sFailedGPUBackends.clear();
 
-#ifdef MOBILE_DEVICE
+#if defined(MOBILE_DEVICE) || USE_HIDE_SDL_SHOWCURSOR
 	SDL_ShowCursor(SDL_DISABLE);
 #endif
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <thread> //for std::thread
 
 #include "Common/File/FileUtil.h"
 #include "Common/File/VFS/VFS.h"
@@ -118,6 +119,7 @@ void SDLJoystick::registerEventHandler() {
 }
 
 InputKeyCode SDLJoystick::getKeycodeForButton(SDL_GameControllerButton button) {
+printf("<<<<<<<<<<<<getKeycodeForButton: %d, \n", button);
 	switch (button) {
 	case SDL_CONTROLLER_BUTTON_DPAD_UP:
 		return NKCODE_DPAD_UP;
@@ -178,6 +180,7 @@ InputKeyCode SDLJoystick::getKeycodeForButton(SDL_GameControllerButton button) {
 void SDLJoystick::ProcessInput(const SDL_Event &event){
 	switch (event.type) {
 	case SDL_CONTROLLERBUTTONDOWN:
+printf("<<<<<<<<<<<<<<<SDL_CONTROLLERBUTTONDOWN\n");
 		if (event.cbutton.state == SDL_PRESSED) {
 			auto code = getKeycodeForButton((SDL_GameControllerButton)event.cbutton.button);
 			if (code != NKCODE_UNKNOWN) {
@@ -190,6 +193,7 @@ void SDLJoystick::ProcessInput(const SDL_Event &event){
 		}
 		break;
 	case SDL_CONTROLLERBUTTONUP:
+printf("<<<<<<<<<<<<<<<SDL_CONTROLLERBUTTONUP\n");
 		if (event.cbutton.state == SDL_RELEASED) {
 			auto code = getKeycodeForButton((SDL_GameControllerButton)event.cbutton.button);
 			if (code != NKCODE_UNKNOWN) {
@@ -209,6 +213,39 @@ void SDLJoystick::ProcessInput(const SDL_Event &event){
 		float value = event.caxis.value * (1.f / 32767.f);
 		if (value > 1.0f) value = 1.0f;
 		if (value < -1.0f) value = -1.0f;
+printf("<<<<<<<<<<<<<<<SDL_CONTROLLERAXISMOTION %d, %d, %d, %f\n", event.caxis.which, event.caxis.axis, event.caxis.value, value);
+#if USE_MOTION_AS_JOYBUTTON
+	int emulate_key = -1;
+	if (event.caxis.axis == 0 && value == -1) {
+		//left
+		emulate_key = 21;
+	} else if (event.caxis.axis == 0 && value == 1) {
+		//right
+		emulate_key = 22;
+	} else if (event.caxis.axis == 1 && value == -1) {
+		//up
+		emulate_key = 19;
+	} else if (event.caxis.axis == 1 && value == 1) {
+		//down
+		emulate_key = 20;
+	}
+	if (emulate_key > 0)
+	{
+		std::thread t([emulate_key]() {
+			KeyInput key;
+			key.flags = KEY_DOWN;
+			key.keyCode = (InputKeyCode)emulate_key;
+			key.deviceId = DEVICE_ID_KEYBOARD;
+			NativeKey(key);
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));		
+			key.flags = KEY_UP;
+			key.keyCode = (InputKeyCode)emulate_key;
+			key.deviceId = DEVICE_ID_KEYBOARD;
+			NativeKey(key);
+		});
+		t.detach();
+	}
+#else
 		// Filter duplicate axis values.
 		auto key = std::pair<InputDeviceID, InputAxis>(deviceId, axisId);
 		auto iter = prevAxisValue_.find(key);
@@ -222,9 +259,11 @@ void SDLJoystick::ProcessInput(const SDL_Event &event){
 			axis.deviceId = deviceId;
 			NativeAxis(&axis, 1);
 		}  // else ignore event.
+#endif
 		break;
 	}
 	case SDL_CONTROLLERDEVICEREMOVED:
+printf("<<<<<<<<<<<<<<<SDL_CONTROLLERDEVICEREMOVED\n");
 		// for removal events, "which" is the instance ID for SDL_CONTROLLERDEVICEREMOVED
 		for (auto it = controllers.begin(); it != controllers.end(); ++it) {
 			if (SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(*it)) == event.cdevice.which) {
@@ -235,6 +274,7 @@ void SDLJoystick::ProcessInput(const SDL_Event &event){
 		}
 		break;
 	case SDL_CONTROLLERDEVICEADDED:
+printf("<<<<<<<<<<<<<<<SDL_CONTROLLERDEVICEADDED\n");
 		// for add events, "which" is the device index!
 		int prevNumControllers = controllers.size();
 		setUpController(event.cdevice.which);

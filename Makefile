@@ -10,6 +10,14 @@ MIYOO:=0
 #PATH=/home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin:$PATH ./linux_arm64.sh
 #PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 
+#SDL/SDLJoystick.cpp
+#<<<<<<<<<<<<getKeycodeForButton
+
+#loading control pad mappings from gamecontrollerdb.txt: SUCCESS!
+#found control pad: X360 Controller, loading mapping: SUCCESS, mapping is:
+#see SDL/SDLJoystick.cpp
+
+
 ifeq ($(MIYOO),5)
 CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
 CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
@@ -48,10 +56,13 @@ CCFLAGS :=
 #-O3 -g0 some games will crash
 ifeq ($(MIYOO),5)
 CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
 else
 CCFLAGS += -O0 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
 endif
-CCFLAGS += -D_DEBUG
 
 ifeq ($(MIYOO),5)
 else ifeq ($(MIYOO),4)
@@ -90,6 +101,8 @@ CCFLAGS += -DNO_SDLVULKAN=1 #
 CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
 CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
 CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1
+CCFLAGS += -DUSE_MOTION_AS_JOYBUTTON=1
+CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1
 else ifeq ($(MIYOO),4)
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 else ifeq ($(MIYOO),2)
@@ -98,6 +111,7 @@ else ifeq ($(MIYOO),1)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 else
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
+CCFLAGS += -DPC_NO_FULLSCREEN=1 #disable fullscreen
 endif
 
 CCFLAGS += -DWITH_UPNP 
@@ -1487,5 +1501,6 @@ debug:
 
 install5:
 	cp PPSSPPSDL /media/wmt/retropie/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/.
+	cp assets/gamecontrollerdb.txt /media/wmt/retropie/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/assets/.
 
 
