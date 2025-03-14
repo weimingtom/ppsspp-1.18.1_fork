@@ -26,6 +26,8 @@ https://github.com/ryanfortner/build-ppsspp-rpi/releases
 see ppsspp_1.12.3_armhf.zip
 测试过build-ppsspp-rpi这个版本无法在非X11环境下运行
 ```
+* (TODO) rotate screen  
+https://github.com/hrydgard/ppsspp/issues/16630  
 
 ## (WIP) How to build for PC xubuntu 20.04  
 * sudo apt install libsdl2-dev cmake
