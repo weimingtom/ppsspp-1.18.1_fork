@@ -94,7 +94,13 @@ https://github.com/hrydgard/ppsspp/issues/16630
 
 ## Bugs  
 * Too slow
+```
+Use -O3, and use -DNDEBUG instead of -D_DEBUG (too many log make it slow)
+```
 * imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
+```
+Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
+```
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
 
 ## TODO  
