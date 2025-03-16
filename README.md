@@ -99,7 +99,18 @@ Use -O3, and use -DNDEBUG instead of -D_DEBUG (too many log make it slow)
 ```
 * imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
 ```
-Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
+Fixed
+see Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
+
+can use usleep(100) or printf() to solve this problem
+I use std::mutex to solve it
+
+crash in Core/HLE/sceMpeg.cpp:906
+free(): double free detected in tcache 2
+
+Fixed here:
+~H264Frames()
+void add(const u8 *str, int sz)
 ```
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
 
@@ -107,6 +118,8 @@ Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
 * Change to -O3 -g0
 ```
+Fixed, see upper imouto.iso bug  
+
 Makefile
 #-O3 -g0 some games will crash
 CCFLAGS += -O0 -g3
