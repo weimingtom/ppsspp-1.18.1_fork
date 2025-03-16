@@ -177,10 +177,33 @@ printf("<<<<<<<<<<<<getKeycodeForButton: %d, \n", button);
 	}
 }
 
+static int start_state = 0;
+static int select_state = 0;
+
 void SDLJoystick::ProcessInput(const SDL_Event &event){
 	switch (event.type) {
 	case SDL_CONTROLLERBUTTONDOWN:
 printf("<<<<<<<<<<<<<<<SDL_CONTROLLERBUTTONDOWN\n");
+#if USE_EMULATE_MENU_BUTTON
+/*
+For GPM280Z2:
+A==0
+B==1
+X==2
+Y==3
+SELECT==4
+START==6
+L1==9
+R1==10
+*/
+if (event.cbutton.button == 4) {
+	start_state = 1;
+printf("<<<<<<<<<<START DOWN\n");
+} else if (event.cbutton.button == 6) {
+	select_state = 1;
+printf("<<<<<<<<<<SELECT DOWN\n");
+}
+#endif
 		if (event.cbutton.state == SDL_PRESSED) {
 			auto code = getKeycodeForButton((SDL_GameControllerButton)event.cbutton.button);
 			if (code != NKCODE_UNKNOWN) {
@@ -194,6 +217,48 @@ printf("<<<<<<<<<<<<<<<SDL_CONTROLLERBUTTONDOWN\n");
 		break;
 	case SDL_CONTROLLERBUTTONUP:
 printf("<<<<<<<<<<<<<<<SDL_CONTROLLERBUTTONUP\n");
+#if USE_EMULATE_MENU_BUTTON
+/*
+For GPM280Z2:
+A==0
+B==1
+X==2
+Y==3
+SELECT==4
+START==6
+L1==9
+R1==10
+*/
+if (event.cbutton.button == 4) {
+	start_state = 0;
+printf("<<<<<<<<<<START UP, %d, %d\n", start_state, select_state);
+} else if (event.cbutton.button == 6) {
+	select_state = 0;
+printf("<<<<<<<<<<SELECT UP, %d, %d\n", start_state, select_state);
+}
+
+if ((start_state == 1 && select_state == 0) || 
+    (start_state == 0 && select_state == 1)) {
+	//use START+SELECT to emulate ESC key, symcode == 27, keycode == 111
+printf("<<<<<<<<<<START+SELECT\n");
+fflush(stdout);
+	std::thread t([this]() {
+		KeyInput key;
+		key.flags = KEY_DOWN;
+//(InputKeyCode)SDLK_ESCAPE; //
+		key.keyCode = (InputKeyCode)this->getKeycodeForButton((SDL_GameControllerButton)5); //or joystick menu button 5
+		key.deviceId = DEVICE_ID_KEYBOARD;
+		NativeKey(key);
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));		
+		key.flags = KEY_UP;
+//(InputKeyCode)SDLK_ESCAPE; //
+		key.keyCode = (InputKeyCode)this->getKeycodeForButton((SDL_GameControllerButton)5); //or joystick menu button 5
+		key.deviceId = DEVICE_ID_KEYBOARD;
+		NativeKey(key);
+	});
+	t.detach();
+}
+#endif
 		if (event.cbutton.state == SDL_RELEASED) {
 			auto code = getKeycodeForButton((SDL_GameControllerButton)event.cbutton.button);
 			if (code != NKCODE_UNKNOWN) {
