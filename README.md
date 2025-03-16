@@ -93,11 +93,11 @@ https://github.com/hrydgard/ppsspp/issues/16630
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; . ./ppsspp_v2.sh; make -j8
 
 ## Bugs  
-* Too slow
+* (done) Too slow
 ```
 Use -O3, and use -DNDEBUG instead of -D_DEBUG (too many log make it slow)
 ```
-* imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
+* (done) imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
 ```
 Fixed
 see Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
@@ -116,7 +116,7 @@ void add(const u8 *str, int sz)
 
 ## TODO  
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
-* Change to -O3 -g0
+* (done) Change to -O3 -g0
 ```
 Fixed, see upper imouto.iso bug  
 
