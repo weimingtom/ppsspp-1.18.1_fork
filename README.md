@@ -5,6 +5,16 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
+## Releases  
+* For GPM280Z2  
+```
+make MIYOO=5 clean && make MIYOO=5 -j8
+```
+* For Trimui Smart Pro
+```
+make MIYOO=2 clean && make MIYOO=2 -j8
+```
+
 ## References  
 * glgetstringi nullptr patch for Allwinners A133  
 https://github.com/knulli-cfw/distribution/blob/bc90dbc9a8c785d7265b5fa3d3a8b976545ba45d/board/batocera/allwinner/a133/patches/ppsspp/001-glStringi-workaround.patch  
