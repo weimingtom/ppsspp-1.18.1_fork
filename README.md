@@ -124,7 +124,7 @@ Makefile
 #-O3 -g0 some games will crash
 CCFLAGS += -O0 -g3
 ```
-* Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
+* (done) Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
 ```
 use START+SELECT to emulate MENU button, see USE_EMULATE_MENU_BUTTON  
 use Joystick to emulate dpad, see USE_MOTION_AS_JOYBUTTON  
