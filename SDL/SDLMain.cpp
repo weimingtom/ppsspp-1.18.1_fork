@@ -1382,6 +1382,12 @@ mode &= ~SDL_WINDOW_FULLSCREEN;
 	if (g_Config.UseFullScreen())
 		mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
+#if USE_ROTATE_270
+	//g_display.rotation = DisplayRotation::ROTATE_270;
+	//g_display.rot_matrix.setRotationZ270();
+	//std::swap(g_display.pixel_xres, g_display.pixel_yres);
+#endif
+
 	int x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(getDisplayNumber());
 	int y = SDL_WINDOWPOS_UNDEFINED;
 	int w = g_display.pixel_xres;

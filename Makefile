@@ -1,3 +1,4 @@
+# 6==waveshare gpm2804, raspberry pi cm4
 # 5==waveshare gpm280z2, raspberry pi zero2w
 # 4==raspberry pi 4b 64bit, 1.18.1
 # 3==trimui brick
@@ -18,7 +19,12 @@ MIYOO:=0
 #see SDL/SDLJoystick.cpp
 
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -march=armv7-a -mtune=cortex-a72 -mfpu=neon-vfpv4 -mfloat-abi=hard
+CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -march=armv7-a -mtune=cortex-a72 -mfpu=neon-vfpv4 -mfloat-abi=hard
+AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
+RANLIB := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ranlib
+else ifeq ($(MIYOO),5)
 CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
 CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -mcpu=cortex-a7 -mfpu=neon -mfloat-abi=hard
 AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
@@ -52,7 +58,13 @@ RM := rm -rf
 
 CCFLAGS :=
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+# For gpm2804
+CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
+
+else ifeq ($(MIYOO),5)
 # For gpm280z2
 CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
@@ -93,8 +105,10 @@ CCFLAGS += -O3 -g0
 CCFLAGS += -DNDEBUG
 endif
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+else ifeq ($(MIYOO),5)
 else ifeq ($(MIYOO),4)
+else ifeq ($(MIYOO),3)
 else ifeq ($(MIYOO),2)
 else ifeq ($(MIYOO),1)
 else
@@ -125,7 +139,16 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+CCFLAGS += -DUSE_ROTATE_270=1
+CCFLAGS += -DNO_SDLVULKAN=1 #
+###CCFLAGS += -DPPSSPP_PLATFORM_RPI=1 #see cmake/Toolchains/raspberry.armv7.cmake
+###CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+#CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1 # UI/NativeApp.cpp #TODO: why refreshRate == 0 ???
+CCFLAGS += -DUSE_MOTION_AS_JOYBUTTON=1 # SDL/SDLJoystick.cpp
+CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
+CCFLAGS += -DUSE_EMULATE_MENU_BUTTON=1 # SDL/SDLJoystick.cpp
+else ifeq ($(MIYOO),5)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
 CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
@@ -199,7 +222,13 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+#FIXME:????-march
+CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/armv7rpi32/include  
+###CCFLAGS += -I./include/vc/include
+CCFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
+else ifeq ($(MIYOO),5)
 #FIXME:????-march
 CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/armv7rpi32/include  
@@ -265,7 +294,14 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),5)
+ifeq ($(MIYOO),6)
+LDFLAGS += -lSDL2 -lz -lGLESv2 -lEGL -L/home/wmt/work_a30/staging_dir/target/usr/lib
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavutil.a
+else ifeq ($(MIYOO),5)
 LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
