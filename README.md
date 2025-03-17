@@ -5,7 +5,7 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
-## Releases and Builds    
+## Unofficial Releases and Builds by make without cmake     
 * For GPM280Z2  
 ```
 make MIYOO=5 clean && make MIYOO=5 -j8
