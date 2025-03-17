@@ -15,6 +15,12 @@ make MIYOO=5 clean && make MIYOO=5 -j8
 make MIYOO=2 clean && make MIYOO=2 -j8
 ```
 
+## Cross compile toolchains  
+* For Trimui Smart Pro and Trimui Brick, aarch64   
+https://github.com/trimui/toolchain_sdk_smartpro/releases/tag/20231018  
+* For Miyoo A30, Raspberry Pi 4, Waveshare GPM280Z2, Waveshare GPM2804, armv7-a        
+https://github.com/XK9274/a30-sdk-miyoo/releases/tag/16042024  
+
 ## References  
 * glgetstringi nullptr patch for Allwinners A133  
 https://github.com/knulli-cfw/distribution/blob/bc90dbc9a8c785d7265b5fa3d3a8b976545ba45d/board/batocera/allwinner/a133/patches/ppsspp/001-glStringi-workaround.patch  
