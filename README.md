@@ -5,20 +5,24 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
-## Releases  
+## Releases and Builds    
 * For GPM280Z2  
 ```
 make MIYOO=5 clean && make MIYOO=5 -j8
 ```
-* For Trimui Smart Pro
+* For Trimui Smart Pro  
 ```
-make MIYOO=2 clean && make MIYOO=2 -j8
+make MIYOO=2 clean && make MIYOO=2 -j8  
+```
+* For debugging on Xubuntu 20.04, 64bit  
+```
+make MIYOO=0 clean && make MIYOO=0 -j8  
 ```
 
-## Cross compile toolchains  
-* For Trimui Smart Pro and Trimui Brick, aarch64   
+## Cross compile toolchains and staging files    
+* For aarch64, like Trimui Smart Pro and Trimui Brick   
 https://github.com/trimui/toolchain_sdk_smartpro/releases/tag/20231018  
-* For Miyoo A30, Raspberry Pi 4, Waveshare GPM280Z2, Waveshare GPM2804, armv7-a        
+* For armv7-a, like Miyoo A30, Raspberry Pi 4B, Raspberry Pi 3B, Waveshare GPM280Z2, Waveshare GPM2804  
 https://github.com/XK9274/a30-sdk-miyoo/releases/tag/16042024  
 
 ## References  
