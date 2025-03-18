@@ -133,6 +133,7 @@ Fixed here:
 void add(const u8 *str, int sz)
 ```
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
+* imouto.iso voice sound delay is bad (but music is good)  
 
 ## TODO  
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
