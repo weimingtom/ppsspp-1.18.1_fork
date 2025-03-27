@@ -304,12 +304,23 @@ static GPUDebugBuffer ApplyRotation(const GPUDebugBuffer &buf, DisplayRotation r
 
 	// This is a simple but not terribly efficient rotation.
 	if (rotation == DisplayRotation::ROTATE_90) {
+#if USE_ROTATE_90 || USE_ROTATE_270
+		rotated.Allocate(buf.GetStride(), buf.GetHeight(), buf.GetFormat(), false);
+		for (u32 y = 0; y < buf.GetHeight(); ++y) {
+			for (u32 x = 0; x < buf.GetStride(); ++x) {
+				if (y >= 0 && y < buf.GetStride() && x >=0 && x < buf.GetHeight()) {
+					rotated.SetRawPixel(buf.GetStride() - x - (481 - 273) - 1, y, buf.GetRawPixel(y, x));
+				}
+			}
+		}
+#else	
 		rotated.Allocate(buf.GetHeight(), buf.GetStride(), buf.GetFormat(), false);
 		for (u32 y = 0; y < buf.GetStride(); ++y) {
 			for (u32 x = 0; x < buf.GetHeight(); ++x) {
 				rotated.SetRawPixel(x, y, buf.GetRawPixel(buf.GetStride() - y - 1, x));
 			}
 		}
+#endif
 	} else if (rotation == DisplayRotation::ROTATE_180) {
 		rotated.Allocate(buf.GetStride(), buf.GetHeight(), buf.GetFormat(), false);
 		for (u32 y = 0; y < buf.GetHeight(); ++y) {
@@ -318,12 +329,22 @@ static GPUDebugBuffer ApplyRotation(const GPUDebugBuffer &buf, DisplayRotation r
 			}
 		}
 	} else {
+#if USE_ROTATE_90 || USE_ROTATE_270
+//FIXME:not implemented
 		rotated.Allocate(buf.GetHeight(), buf.GetStride(), buf.GetFormat(), false);
 		for (u32 y = 0; y < buf.GetStride(); ++y) {
 			for (u32 x = 0; x < buf.GetHeight(); ++x) {
 				rotated.SetRawPixel(x, y, buf.GetRawPixel(y, buf.GetHeight() - x - 1));
 			}
 		}
+#else	
+		rotated.Allocate(buf.GetHeight(), buf.GetStride(), buf.GetFormat(), false);
+		for (u32 y = 0; y < buf.GetStride(); ++y) {
+			for (u32 x = 0; x < buf.GetHeight(); ++x) {
+				rotated.SetRawPixel(x, y, buf.GetRawPixel(y, buf.GetHeight() - x - 1));
+			}
+		}
+#endif
 	}
 
 	return rotated;
@@ -348,7 +369,11 @@ bool TakeGameScreenshot(Draw::DrawContext *draw, const Path &filename, Screensho
 		GPUDebugBuffer temp;
 		success = ::GetOutputFramebuffer(draw, buf);
 		if (success) {
+#if 0
 			buf = ApplyRotation(temp, g_display.rotation);
+#else
+			buf = ApplyRotation(buf, g_display.rotation);
+#endif
 		}
 	} else {
 		_dbg_assert_(draw);

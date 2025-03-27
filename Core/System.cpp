@@ -43,6 +43,8 @@
 #include "Common/TimeUtil.h"
 #include "Common/GraphicsContext.h"
 
+#include "Common/System/Display.h" //for g_display
+
 #include "Core/RetroAchievements.h"
 #include "Core/MemFault.h"
 #include "Core/HDRemaster.h"
@@ -123,6 +125,38 @@ void ResetUIState() {
 }
 
 void UpdateUIState(GlobalUIState newState) {
+#if USE_ROTATE_90 || USE_ROTATE_270
+#if USE_ROTATE_90_TWO_STATE
+//see Core/Core.cpp
+extern int UpdateScreenScale_width;
+extern int UpdateScreenScale_height;
+
+if (newState == UISTATE_INGAME || newState == UISTATE_EXCEPTION) {
+	g_display.rotation = DisplayRotation::ROTATE_0;
+	g_display.rot_matrix.setIdentity();
+	//UpdateScreenScale(272, 480);
+	if (UpdateScreenScale_width > 0 && UpdateScreenScale_height > 0)
+	{
+		UpdateScreenScale(
+			UpdateScreenScale_width < UpdateScreenScale_height ? UpdateScreenScale_width : UpdateScreenScale_height, 
+			UpdateScreenScale_width > UpdateScreenScale_height ? UpdateScreenScale_width : UpdateScreenScale_height 
+		);
+	}
+} else {
+	g_display.rotation = DisplayRotation::ROTATE_90;
+	g_display.rot_matrix.setRotationZ90();
+	//UpdateScreenScale(480, 272);
+	if (UpdateScreenScale_width > 0 && UpdateScreenScale_height > 0)
+	{
+		UpdateScreenScale(
+			UpdateScreenScale_width > UpdateScreenScale_height ? UpdateScreenScale_width : UpdateScreenScale_height, 
+			UpdateScreenScale_width < UpdateScreenScale_height ? UpdateScreenScale_width : UpdateScreenScale_height 
+		);
+	}
+}
+#endif
+#endif
+
 	// Never leave the EXIT state.
 	if (globalUIState != newState && globalUIState != UISTATE_EXIT) {
 		globalUIState = newState;

@@ -162,9 +162,22 @@ static bool IsWindowSmall(int pixelWidth, int pixelHeight) {
 	return g_Config.IsPortrait() ? (h < 480 + 80) : (w < 480 + 80);
 }
 
+#if USE_ROTATE_90 || USE_ROTATE_270
+#if USE_ROTATE_90_TWO_STATE
+int UpdateScreenScale_width = 0;
+int UpdateScreenScale_height = 0;
+#endif
+#endif
 // TODO: Feels like this belongs elsewhere.
 bool UpdateScreenScale(int width, int height) {
 	bool smallWindow;
+
+#if USE_ROTATE_90 || USE_ROTATE_270
+#if USE_ROTATE_90_TWO_STATE
+UpdateScreenScale_width = width;
+UpdateScreenScale_height = height;
+#endif
+#endif
 
 	float g_logical_dpi = System_GetPropertyFloat(SYSPROP_DISPLAY_LOGICAL_DPI);
 	g_display.dpi = System_GetPropertyFloat(SYSPROP_DISPLAY_DPI);

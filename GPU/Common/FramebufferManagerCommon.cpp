@@ -1200,6 +1200,7 @@ void FramebufferManagerCommon::UpdateFromMemory(u32 addr, int size) {
 }
 
 void FramebufferManagerCommon::DrawPixels(VirtualFramebuffer *vfb, int dstX, int dstY, const u8 *srcPixels, GEBufferFormat srcPixelFormat, int srcStride, int width, int height, RasterChannel channel, const char *tag) {
+#if 1
 	textureCache_->ForgetLastTexture();
 	shaderManager_->DirtyLastShader();
 	float u0 = 0.0f, u1 = 1.0f;
@@ -1251,6 +1252,7 @@ void FramebufferManagerCommon::DrawPixels(VirtualFramebuffer *vfb, int dstX, int
 
 		gstate_c.Dirty(DIRTY_ALL_RENDER_STATE);
 	}
+#endif
 }
 
 bool FramebufferManagerCommon::BindFramebufferAsColorTexture(int stage, VirtualFramebuffer *framebuffer, int flags, int layer) {
@@ -1534,6 +1536,13 @@ bool FramebufferManagerCommon::DrawFramebufferToOutput(const u8 *srcPixels, int 
 		return false;
 
 	int uvRotation = useBufferedRendering_ ? g_Config.iInternalScreenRotation : ROTATION_LOCKED_HORIZONTAL;
+#if USE_ROTATE_90 || USE_ROTATE_270
+#if USE_ROTATE_90_TWO_STATE
+if (GetUIState() == UISTATE_INGAME || GetUIState() == UISTATE_EXCEPTION) {
+uvRotation = ROTATION_LOCKED_VERTICAL;
+}
+#endif
+#endif
 	OutputFlags flags = g_Config.iDisplayFilter == SCALE_LINEAR ? OutputFlags::LINEAR : OutputFlags::NEAREST;
 	if (needBackBufferYSwap_) {
 		flags |= OutputFlags::BACKBUFFER_FLIPPED;
@@ -1662,6 +1671,10 @@ void FramebufferManagerCommon::CopyDisplayToOutput(bool reallyDirty) {
 	vfb->dirtyAfterDisplay = false;
 	vfb->reallyDirtyAfterDisplay = false;
 
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<<<<<<<< vfb->fbo %d, %d, %d, %d\n", vfb->fbo->Width(), vfb->fbo->Height(), vfb->bufferWidth, vfb->bufferHeight);
+#endif
+
 	if (prevDisplayFramebuf_ != displayFramebuf_) {
 		prevPrevDisplayFramebuf_ = prevDisplayFramebuf_;
 	}
@@ -1678,11 +1691,27 @@ void FramebufferManagerCommon::CopyDisplayToOutput(bool reallyDirty) {
 				DEBUG_LOG(Log::FrameBuf, "Displaying FBO %08x", vfb->fb_address);
 		}
 
+#if !USE_ROTATE_90 && !USE_ROTATE_270
 		float u0 = offsetX / (float)vfb->bufferWidth;
 		float v0 = offsetY / (float)vfb->bufferHeight;
 		float u1 = (480.0f + offsetX) / (float)vfb->bufferWidth;
 		float v1 = (272.0f + offsetY) / (float)vfb->bufferHeight;
+#else
+float u0 = 0, v0 = 0, u1 = 0, v1 = 0;
+if (g_display.rotation != DisplayRotation::ROTATE_90 && g_display.rotation != DisplayRotation::ROTATE_270) {
+		u0 = offsetX / (float)vfb->bufferWidth;
+		v0 = offsetY / (float)vfb->bufferHeight;
+		u1 = (480.0f + offsetX) / (float)vfb->bufferWidth;
+		v1 = (272.0f + offsetY) / (float)vfb->bufferHeight;
+} else {
+		u0 = offsetY / (float)vfb->bufferWidth;
+		v0 = offsetX / (float)vfb->bufferHeight;
+		u1 = (272.0f + offsetY) / (float)vfb->bufferWidth;
+		v1 = (480.0f + offsetX) / (float)vfb->bufferHeight;
+}
+#endif
 
+#if 1
 		//clip the VR framebuffer to keep the aspect ratio
 		if (IsVREnabled() && !IsFlatVRGame() && !IsGameVRScene()) {
 			float aspect = 272.0f / 480.0f * (IsImmersiveVRMode() ? 2.0f : 1.0f);
@@ -1697,10 +1726,18 @@ void FramebufferManagerCommon::CopyDisplayToOutput(bool reallyDirty) {
 			v0 += zoom;
 			v1 -= zoom;
 		}
+#endif
 
 		textureCache_->ForgetLastTexture();
 
 		int uvRotation = useBufferedRendering_ ? g_Config.iInternalScreenRotation : ROTATION_LOCKED_HORIZONTAL;
+#if USE_ROTATE_90 || USE_ROTATE_270
+#if USE_ROTATE_90_TWO_STATE
+if (GetUIState() == UISTATE_INGAME || GetUIState() == UISTATE_EXCEPTION) {
+uvRotation = ROTATION_LOCKED_VERTICAL;
+}
+#endif
+#endif
 		OutputFlags flags = g_Config.iDisplayFilter == SCALE_LINEAR ? OutputFlags::LINEAR : OutputFlags::NEAREST;
 		if (needBackBufferYSwap_) {
 			flags |= OutputFlags::BACKBUFFER_FLIPPED;
@@ -1709,12 +1746,23 @@ void FramebufferManagerCommon::CopyDisplayToOutput(bool reallyDirty) {
 		if (GetGPUBackend() == GPUBackend::DIRECT3D9 || GetGPUBackend() == GPUBackend::DIRECT3D11) {
 			flags |= OutputFlags::POSITION_FLIPPED;
 		}
-
+#if 1
 		int actualWidth = (vfb->bufferWidth * vfb->renderWidth) / vfb->width;
 		int actualHeight = (vfb->bufferHeight * vfb->renderHeight) / vfb->height;
+#else
+		int actualWidth = (vfb->bufferWidth * vfb->renderHeight) / vfb->width;
+		int actualHeight = (vfb->bufferHeight * vfb->renderWidth) / vfb->height;
+#endif
 		presentation_->UpdateUniforms(textureCache_->VideoIsPlaying());
 		presentation_->SourceFramebuffer(vfb->fbo, actualWidth, actualHeight);
+#if 1
+//FIXME:???? why game content draw scale wrong??????
+#endif
+#if 1
 		presentation_->CopyToOutput(flags, uvRotation, u0, v0, u1, v1);
+#else
+		presentation_->CopyToOutput(flags, uvRotation, v0, u0, v1, u1);
+#endif
 	} else if (useBufferedRendering_) {
 		WARN_LOG(Log::FrameBuf, "Using buffered rendering, and current VFB lacks an FBO: %08x", vfb->fb_address);
 	} else {
@@ -1876,6 +1924,9 @@ void FramebufferManagerCommon::ResizeFramebufFBO(VirtualFramebuffer *vfb, int w,
 	size_t len = FormatFramebufferName(vfb, tag, sizeof(tag));
 
 	vfb->fbo = draw_->CreateFramebuffer({ vfb->renderWidth, vfb->renderHeight, 1, GetFramebufferLayers(), msaaLevel_, true, tag });
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<CreateFramebuffer 1 %s\n", tag);
+#endif
 	if (Memory::IsVRAMAddress(vfb->fb_address) && vfb->fb_stride != 0) {
 		NotifyMemInfo(MemBlockFlags::ALLOC, vfb->fb_address, vfb->BufferByteSize(RASTER_COLOR), tag, len);
 	}
@@ -2418,6 +2469,9 @@ VirtualFramebuffer *FramebufferManagerCommon::CreateRAMFramebuffer(uint32_t fbAd
 	textureCache_->NotifyFramebuffer(vfb, NOTIFY_FB_CREATED);
 	bool createDepthBuffer = format == GE_FORMAT_DEPTH16;
 	vfb->fbo = draw_->CreateFramebuffer({ vfb->renderWidth, vfb->renderHeight, 1, GetFramebufferLayers(), 0, createDepthBuffer, name });
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<CreateFramebuffer 2\n");
+#endif
 	vfbs_.push_back(vfb);
 
 	u32 byteSize = vfb->BufferByteSize(channel);
@@ -2476,6 +2530,9 @@ VirtualFramebuffer *FramebufferManagerCommon::FindDownloadTempBuffer(VirtualFram
 
 		// We always create a color-only framebuffer here - readbacks of depth convert to color while translating the values.
 		nvfb->fbo = draw_->CreateFramebuffer({ nvfb->bufferWidth, nvfb->bufferHeight, 1, 1, 0, false, name });
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<CreateFramebuffer 3 %s\n", name);
+#endif
 		if (!nvfb->fbo) {
 			ERROR_LOG(Log::FrameBuf, "Error creating FBO! %d x %d", nvfb->renderWidth, nvfb->renderHeight);
 			delete nvfb;
@@ -2929,6 +2986,9 @@ Draw::Framebuffer *FramebufferManagerCommon::GetTempFBO(TempFBO reason, u16 w, u
 	snprintf(name, sizeof(name), "tempfbo_%s_%dx%d", TempFBOReasonToString(reason), w / renderScaleFactor_, h / renderScaleFactor_);
 
 	Draw::Framebuffer *fbo = draw_->CreateFramebuffer({ w, h, 1, GetFramebufferLayers(), 0, z_stencil, name });
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<CreateFramebuffer 4\n");
+#endif
 	if (!fbo) {
 		return nullptr;
 	}
@@ -3417,6 +3477,7 @@ void FramebufferManagerCommon::DrawActiveTexture(float x, float y, float w, floa
 }
 
 void FramebufferManagerCommon::BlitFramebuffer(VirtualFramebuffer *dst, int dstX, int dstY, VirtualFramebuffer *src, int srcX, int srcY, int w, int h, int bpp, RasterChannel channel, const char *tag) {
+#if 1
 	if (!dst->fbo || !src->fbo || !useBufferedRendering_) {
 		// This can happen if they recently switched from non-buffered.
 		if (useBufferedRendering_) {
@@ -3523,6 +3584,7 @@ void FramebufferManagerCommon::BlitFramebuffer(VirtualFramebuffer *dst, int dstX
 	draw_->Invalidate(InvalidationFlags::CACHED_RENDER_STATE);
 
 	gstate_c.Dirty(DIRTY_ALL_RENDER_STATE);
+#endif
 }
 
 // The input is raw pixel coordinates, scale not taken into account.
@@ -3613,6 +3675,9 @@ VirtualFramebuffer *FramebufferManagerCommon::ResolveFramebufferColorToFormat(Vi
 		char tag[128];
 		FormatFramebufferName(vfb, tag, sizeof(tag));
 		vfb->fbo = draw_->CreateFramebuffer({ vfb->renderWidth, vfb->renderHeight, 1, GetFramebufferLayers(), 0, true, tag });
+#if USE_ROTATE_90 || USE_ROTATE_270
+//printf("<<<CreateFramebuffer 5\n");
+#endif
 		vfbs_.push_back(vfb);
 	}
 

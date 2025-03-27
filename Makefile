@@ -95,7 +95,7 @@ CCFLAGS += -DNDEBUG
 
 else ifeq ($(MIYOO),0)
 # For PC xubuntu 20.04 64bit
-CCFLAGS += -O3 -g3
+CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
 CCFLAGS += -DNDEBUG
 else
@@ -140,14 +140,22 @@ CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
 ifeq ($(MIYOO),6)
-CCFLAGS += -DUSE_ROTATE_270=1
 CCFLAGS += -DNO_SDLVULKAN=1 #
-###CCFLAGS += -DPPSSPP_PLATFORM_RPI=1 #see cmake/Toolchains/raspberry.armv7.cmake
-###CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+###CCFLAGS += -DPPSSPP_PLATFORM_RPI=1 #see cmake/Toolchains/raspberry.armv7.cmake, only for rpi zero2w, not for rpi cm4
+###CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 #only for rpi zero2w, not for rpi cm4
 #CCFLAGS += -DNO_NATIVE_FRAME_SLEEP=1 # UI/NativeApp.cpp #TODO: why refreshRate == 0 ???
 CCFLAGS += -DUSE_MOTION_AS_JOYBUTTON=1 # SDL/SDLJoystick.cpp
 CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
 CCFLAGS += -DUSE_EMULATE_MENU_BUTTON=1 # SDL/SDLJoystick.cpp
+CCFLAGS += -DUSE_ROTATE_90=1 -DUSE_ROTATE_90_TWO_STATE=1 
+#glViewport, or use USE_ROTATE_270
+##SDL/SDLMain.cpp
+##Common/GPU/OpenGL/GLQueueRunner.cpp
+##GPU/Common/FramebufferManagerCommon.cpp
+##GPU/Common/PresentationCommon.cpp
+##Core/Screenshot.cpp
+##Core/System.cpp, UpdateUIState implement
+##Core/Core.cpp, UpdateScreenScale implement
 else ifeq ($(MIYOO),5)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 CCFLAGS += -DPPSSPP_PLATFORM_RPI=1
@@ -165,7 +173,8 @@ CCFLAGS += -DNO_SDLVULKAN=1 #
 else
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 CCFLAGS += -DPC_NO_FULLSCREEN=1 #disable fullscreen
-CCFLAGS += -DUSE_EMULATE_MENU_BUTTON=1
+CCFLAGS += -DUSE_EMULATE_MENU_BUTTON=1 # SDL/SDLJoystick.cpp
+CCFLAGS += -DUSE_ROTATE_90=1 -DUSE_ROTATE_90_TWO_STATE=1 #PC MIYOO=0 test screen rotate
 endif
 
 CCFLAGS += -DWITH_UPNP 

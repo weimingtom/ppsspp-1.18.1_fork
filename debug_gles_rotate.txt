@@ -1,0 +1,64 @@
+
+
+----------
+(gdb) b SDL_GetWindowSize
+Breakpoint 1 at 0xea640
+
+Thread 1 "PPSSPPSDL" hit Breakpoint 1, 0x00007ffff7e8b2e0 in SDL_GetWindowSize () from /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+(gdb) bt
+#0  0x00007ffff7e8b2e0 in SDL_GetWindowSize () from /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#1  0x00005555556dfeab in UpdateScreenDPI (window=0x555556fdffb0) at SDL/SDLMain.cpp:192
+#2  main (argc=<optimized out>, argv=0x7fffffffdfd8) at SDL/SDLMain.cpp:1473
+
+---------
+
+(gdb) b glViewport
+Breakpoint 2 at 0x7ffff520f6c0 (3 locations)
+
+Thread 1 "PPSSPPSDL" hit Breakpoint 2, 0x00007ffff7e17c80 in glViewport ()
+   from /lib/x86_64-linux-gnu/libGLESv2.so.2
+(gdb) bt
+#0  0x00007ffff7e17c80 in glViewport ()
+   from /lib/x86_64-linux-gnu/libGLESv2.so.2
+#1  0x0000555555cdc614 in GLQueueRunner::PerformRenderPass (
+    this=0x555557295998, step=..., first=<optimized out>, 
+    last=<optimized out>, profile=...)
+    at Common/GPU/OpenGL/GLQueueRunner.cpp:1010
+#2  0x0000555555cde44b in GLQueueRunner::RunSteps (
+    this=this@entry=0x555557295998, 
+    steps=std::vector of length 1, capacity 1 = {...}, frameData=..., 
+    skipGLCalls=<optimized out>, keepSteps=keepSteps@entry=false, 
+    useVR=useVR@entry=false) at Common/GPU/OpenGL/GLQueueRunner.cpp:690
+#3  0x0000555555cd59c1 in GLRenderManager::Run (
+    this=this@entry=0x5555572951a0, task=...)
+    at Common/GPU/OpenGL/GLRenderManager.cpp:514
+#4  0x0000555555cd5dd5 in GLRenderManager::ThreadFrame (this=0x5555572951a0)
+    at Common/GPU/OpenGL/GLRenderManager.cpp:161
+#5  0x00005555556e04c3 in main (argc=<optimized out>, argv=<optimized out>)
+    at SDL/SDLMain.cpp:1589
+
+
+-----------
+
+(gdb) b ComputeOrthoMatrix
+Breakpoint 1 at 0x19a371: file UI/NativeApp.cpp, line 1022.
+
+Thread 54 "Emu" hit Breakpoint 1, ComputeOrthoMatrix (yres=958, xres=544)
+    at UI/NativeApp.cpp:1022
+1022		switch (GetGPUBackend()) {
+(gdb) bt
+#0  ComputeOrthoMatrix (yres=958, xres=544) at UI/NativeApp.cpp:1022
+#1  NativeFrame (graphicsContext=0x555556e5ae20) at UI/NativeApp.cpp:1119
+#2  0x000055555581f11d in UpdateRunLoop (ctx=<optimized out>)
+    at Core/Core.cpp:212
+#3  0x0000555555c4ad38 in EmuThreadFunc (graphicsContext=0x555556e5ae20)
+    at SDL/SDLMain.cpp:700
+#4  0x00007ffff7cfedf4 in ?? () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#5  0x00007ffff7aa3609 in start_thread (arg=<optimized out>)
+    at pthread_create.c:477
+#6  0x00007ffff79c8353 in clone ()
+    at ../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+
+
+
+
