@@ -133,7 +133,8 @@ Fixed here:
 void add(const u8 *str, int sz)
 ```
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
-* imouto.iso voice sound delay is bad (but music is good)  
+* imouto.iso voice sound delay is bad (but music is good)
+* LR肩键无效，AB键交换，人物声音变尖（但背景音却正常）  
 
 ## TODO  
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
@@ -170,6 +171,13 @@ PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_a
 * see UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
 
 # How to launch in Retropie for Waveshare GPM2804 without mc (File Manager) 
+```
+找到方法解决GPM2804运行PPSSPP和运行onscripter没有声音输出的问题——
+方法是不用mc（树莓派retropie上的一个文件管理器）运行，
+而是创建一个sh文件在/home/pi/RetroPie/retropiemenu/onscripter.sh，
+然后重启即可添加一个快捷方式在retropie分类下，
+然后用这个方法启动任意程序即可有声音输出
+```
 * To solve no audio problem. If use mc (File Manager) to launch, SDL2 will have no audio output   
 * Create file (need reboot to refresh retropie menu) : /home/pi/RetroPie/retropiemenu/ppsspp.sh   
 ```
@@ -615,4 +623,10 @@ PPSSPP旋转90度研究。我测试用gpm2804运行我的旋转90度双状态的
 例如imouto.iso（中文移植的实妹相伴的大泉君），
 不过其他游戏就不会出现
 （3）声音还不行，要另外想办法修复
+
+总体来说，我魔改编译的GPM2804版的PPSSPP，还是比不上R36S上那个PPSSPP那个好，
+那个PPSSPP 1.17.1跑《实妹相伴的大泉君》移植PSP版几乎完美，除了两个地方，
+一个是对话框显示似乎会有延迟，另一个是LR肩键按下去也有一些画面闪烁。
+而我的魔改版就问题更多了，LR肩键无效，AB键交换，人物声音变尖
+（但背景音却正常），不知道能否改好这些问题，暂时还是不如R36S版
 ```
