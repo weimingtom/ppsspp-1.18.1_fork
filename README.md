@@ -169,7 +169,8 @@ PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_a
 # sleep bug for rpi32 (rpizero2w), waveshare gpm280z2     
 * see UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
 
-# How to launch in Retropie for Waveshare GPM2804 without mc (File Manager)    
+# How to launch in Retropie for Waveshare GPM2804 without mc (File Manager) 
+* To solve no audio problem. If use mc (File Manager) to launch, SDL2 will have no audio output   
 * Create file (need reboot to refresh retropie menu) : /home/pi/RetroPie/retropiemenu/ppsspp.sh   
 ```
 #!/bin/sh
