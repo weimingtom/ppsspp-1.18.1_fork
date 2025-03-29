@@ -169,6 +169,20 @@ PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_a
 # sleep bug for rpi32 (rpizero2w), waveshare gpm280z2     
 * see UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
 
+# How to launch in Retropie for Waveshare GPM2804 without mc (File Manager)    
+* Create file (need reboot to refresh retropie menu) : /home/pi/RetroPie/retropiemenu/ppsspp.sh   
+```
+#!/bin/sh
+
+/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/PPSSPPSDL
+```
+* (Not recommended) Or modify file and append it to : /opt/retropie/configs/all/autostart.sh  
+```
+#emulationstation #auto
+emulationstation --screenrotate 3 --screensize 640 480
+/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/PPSSPPSDL
+```
+
 # rotate 90 degrees (270 degrees) with two states in GPM2804   
 * rotate 90 degrees (270 degrees) with two states, 双状态旋转90度   
 * Another method is rotating 90 degrees but using Software Rendering (Slow)  
