@@ -79,6 +79,10 @@ https://github.com/hrydgard/ppsspp/issues/16630
 里面的文件管理器mc启动，
 但mc会占用cpu百分之百，解决办法写一个sh然后在后面加个&，
 这样mc就不会占用太多cpu了——虽然还是卡
+【补注：不要用这种方法，会导致按键影响到mc，
+建议做法：（1）点击elf文件或者去掉sh文件内的&
+（2）或者在/home/pi/RetroPie/retropiemenu/目录下创建sh文件，
+这样就能在retropie内创建快捷方式（需要重启一下emulationstation）】
 
 树莓派掌机gpm280z2移植ppsspp研究。声音延迟问题解决，键位问题还没研究出来方法。
 关于第一个问题声音延迟，其实解决办法是把日志给关了就不会声音延迟了
