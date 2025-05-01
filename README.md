@@ -634,3 +634,22 @@ PPSSPP旋转90度研究。我测试用gpm2804运行我的旋转90度双状态的
 而我的魔改版就问题更多了，LR肩键无效，AB键交换，人物声音变尖
 （但背景音却正常），不知道能否改好这些问题，暂时还是不如R36S版
 ```
+
+## About ulimit in TrimUI Smart Pro
+* ulimit -c unlimited
+* If you use ulimit -c unlimited, the core dump file may be saved to /tmp folder
+* cat /proc/sys/kernel/core_pattern
+```
+ _____  _              __     _
+|_   _||_| ___  _ _   |  |   |_| ___  _ _  _ _
+  | |   _ |   ||   |  |  |__ | ||   || | ||_'_|
+  | |  | || | || _ |  |_____||_||_|_||___||_,_|
+  |_|  |_||_|_||_|_|  Tina is Based on OpenWrt!
+ ----------------------------------------------
+ Tina Linux (Neptune, 5C1C9C53)
+ ----------------------------------------------
+root@TinaLinux:/# cat /proc/sys/kernel/core_pattern
+cat /proc/sys/kernel/core_pattern
+/tmp/%e.%t.%p.%s.core
+``` 
+* But core dump file may be too big (about 300 MB)
