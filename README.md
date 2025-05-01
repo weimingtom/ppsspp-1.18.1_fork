@@ -6,6 +6,10 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
 ## Unofficial Releases and Builds by make without cmake     
+* For GPM2804 (rotate 270 degrees, but not good)    
+```
+make MIYOO=6 clean && make MIYOO=6 -j8
+```
 * For GPM280Z2  
 ```
 make MIYOO=5 clean && make MIYOO=5 -j8
@@ -193,6 +197,41 @@ PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_a
 ```
 #emulationstation #auto
 emulationstation --screenrotate 3 --screensize 640 480
+/home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/PPSSPPSDL
+```
+
+## About ulimit in TrimUI Smart Pro
+* ulimit -c unlimited
+* If you use ulimit -c unlimited, the core dump file may be saved to /tmp folder
+* cat /proc/sys/kernel/core_pattern
+```
+ _____  _              __     _
+|_   _||_| ___  _ _   |  |   |_| ___  _ _  _ _
+  | |   _ |   ||   |  |  |__ | ||   || | ||_'_|
+  | |  | || | || _ |  |_____||_||_|_||___||_,_|
+  |_|  |_||_|_||_|_|  Tina is Based on OpenWrt!
+ ----------------------------------------------
+ Tina Linux (Neptune, 5C1C9C53)
+ ----------------------------------------------
+root@TinaLinux:/# cat /proc/sys/kernel/core_pattern
+cat /proc/sys/kernel/core_pattern
+/tmp/%e.%t.%p.%s.core
+``` 
+* But core dump file may be too big (about 300 MB)
+
+## About running PPSSPP in retropie menu 
+```
+If running on GPM280Z2 or GPM2804, run through mc (File Manager),
+
+or put a ppsspp.sh file in /home/pi/RetroPie/retropiemenu
+(you need to edit ppsspp.sh to point to a path)
+and then run PPSSPP in retropie menu
+```
+```
+#!/bin/sh
+
+# put this file ppsspp.sh to put to /home/pi/RetroPie/retropiemenu
+
 /home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/PPSSPPSDL
 ```
 
@@ -634,22 +673,3 @@ PPSSPP旋转90度研究。我测试用gpm2804运行我的旋转90度双状态的
 而我的魔改版就问题更多了，LR肩键无效，AB键交换，人物声音变尖
 （但背景音却正常），不知道能否改好这些问题，暂时还是不如R36S版
 ```
-
-## About ulimit in TrimUI Smart Pro
-* ulimit -c unlimited
-* If you use ulimit -c unlimited, the core dump file may be saved to /tmp folder
-* cat /proc/sys/kernel/core_pattern
-```
- _____  _              __     _
-|_   _||_| ___  _ _   |  |   |_| ___  _ _  _ _
-  | |   _ |   ||   |  |  |__ | ||   || | ||_'_|
-  | |  | || | || _ |  |_____||_||_|_||___||_,_|
-  |_|  |_||_|_||_|_|  Tina is Based on OpenWrt!
- ----------------------------------------------
- Tina Linux (Neptune, 5C1C9C53)
- ----------------------------------------------
-root@TinaLinux:/# cat /proc/sys/kernel/core_pattern
-cat /proc/sys/kernel/core_pattern
-/tmp/%e.%t.%p.%s.core
-``` 
-* But core dump file may be too big (about 300 MB)
