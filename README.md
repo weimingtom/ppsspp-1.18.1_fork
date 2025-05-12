@@ -5,6 +5,14 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
+## Original code compare
+* ppsspp-1.18.1.tar.xz  
+No code changed, but not include dependencies  
+see https://github.com/hrydgard/ppsspp/releases/tag/v1.18.1  
+see https://github.com/hrydgard/ppsspp/releases/download/v1.18.1/ppsspp-1.18.1.tar.xz  
+* ppsspp_1.18.1_cmake2.tar.gz  
+Some code changed, but includes dependencies  
+
 ## Unofficial Releases and Builds by make without cmake     
 * For GPM2804 (rotate 270 degrees, but not good)    
 ```
