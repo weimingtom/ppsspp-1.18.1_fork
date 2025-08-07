@@ -14,8 +14,6 @@
 #include "Common/StringUtils.h"
 #include "Common/Data/Convert/SmallDataConvert.h"
 
-#include "Common/System/Display.h" //FIXME:Added, DisplayRect, not used
-
 #include "GLQueueRunner.h"
 #include "GLRenderManager.h"
 #include "DataFormatGL.h"
@@ -474,9 +472,6 @@ void GLQueueRunner::InitCreateFramebuffer(const GLRInitStep &step) {
 
 		// Create the surfaces.
 		glBindTexture(GL_TEXTURE_2D, tex.texture);
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<<< glTexImage2D %d, %d\n", fbo->width, fbo->height);
-#endif
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, fbo->width, fbo->height, 0, format, type, nullptr);
 
 		tex.wrapS = GL_CLAMP_TO_EDGE;
@@ -950,15 +945,7 @@ void GLQueueRunner::PerformRenderPass(const GLRStep &step, bool first, bool last
 			if (c.clear.scissorW == 0) {
 				glDisable(GL_SCISSOR_TEST);
 			} else {
-#if USE_ROTATE_90 || USE_ROTATE_270
-if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == DisplayRotation::ROTATE_270) {
-				glScissor(c.clear.scissorY, c.clear.scissorX, c.clear.scissorH, c.clear.scissorW);
-} else {
 				glScissor(c.clear.scissorX, c.clear.scissorY, c.clear.scissorW, c.clear.scissorH);
-}
-#else
-				glScissor(c.clear.scissorX, c.clear.scissorY, c.clear.scissorW, c.clear.scissorH);
-#endif
 			}
 			if (c.clear.colorMask != colorMask) {
 				glColorMask(c.clear.colorMask & 1, (c.clear.colorMask >> 1) & 1, (c.clear.colorMask >> 2) & 1, (c.clear.colorMask >> 3) & 1);
@@ -998,51 +985,12 @@ if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == Di
 		case GLRRenderCommand::VIEWPORT:
 		{
 			float y = c.viewport.vp.y;
-			float x = c.viewport.vp.x;
-			if (!curFB_) {
-#if USE_ROTATE_90
-if (g_display.rotation == DisplayRotation::ROTATE_90) {			
-				//y = curFBHeight_ - y - c.viewport.vp.h;
-				//x = curFBWidth_ - x - c.viewport.vp.w;
-} else if (g_display.rotation == DisplayRotation::ROTATE_270) {
+			if (!curFB_)
 				y = curFBHeight_ - y - c.viewport.vp.h;
-				x = curFBWidth_ - x - c.viewport.vp.w;
-} else {
-			    y = curFBHeight_ - y - c.viewport.vp.h;
-}
-#elif USE_ROTATE_270
-				y = curFBHeight_ - y - c.viewport.vp.h;
-				x = curFBWidth_ - x - c.viewport.vp.w;
-#else
-			    y = curFBHeight_ - y - c.viewport.vp.h;
-#endif
-			}
-#if USE_ROTATE_90 || USE_ROTATE_270
-//const GLRViewport &vp = c.viewport.vp;
-//DisplayRect<float> rc{ vp.x, vp.y, vp.w, vp.h };
-//GLRViewport final_vp;
-#endif
 
 			// TODO: Support FP viewports through glViewportArrays
 			if (viewport.x != c.viewport.vp.x || viewport.y != y || viewport.w != c.viewport.vp.w || viewport.h != c.viewport.vp.h) {
-#if USE_ROTATE_90 || USE_ROTATE_270
-//RotateRectToDisplay(rc, (float)curFBWidth_, (float)curFBHeight_);
-//final_vp.x = rc.x;
-//final_vp.y = rc.y;
-//final_vp.w = rc.w;
-//final_vp.h = rc.h;
-//final_vp.maxZ = vp.maxZ;
-//final_vp.minZ = vp.minZ;
-
-//				glViewport((GLint)final_vp.x, (GLint)final_vp.y, (GLsizei)final_vp.w, (GLsizei)final_vp.h);
-if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == DisplayRotation::ROTATE_270) {
-				glViewport((GLint)y, (GLint)x, (GLsizei)c.viewport.vp.h, (GLsizei)c.viewport.vp.w);
-} else {
 				glViewport((GLint)c.viewport.vp.x, (GLint)y, (GLsizei)c.viewport.vp.w, (GLsizei)c.viewport.vp.h);
-}
-#else
-				glViewport((GLint)c.viewport.vp.x, (GLint)y, (GLsizei)c.viewport.vp.w, (GLsizei)c.viewport.vp.h);
-#endif
 				viewport.x = c.viewport.vp.x;
 				viewport.y = y;
 				viewport.w = c.viewport.vp.w;
@@ -1059,16 +1007,7 @@ if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == Di
 					glDepthRange(c.viewport.vp.minZ, c.viewport.vp.maxZ);
 				}
 #else
-#if USE_ROTATE_90 || USE_ROTATE_270
-				//glDepthRangef(final_vp.minZ, final_vp.maxZ);
-if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == DisplayRotation::ROTATE_270) {
 				glDepthRangef(c.viewport.vp.minZ, c.viewport.vp.maxZ);
-} else {
-				glDepthRangef(c.viewport.vp.minZ, c.viewport.vp.maxZ);
-}
-#else
-				glDepthRangef(c.viewport.vp.minZ, c.viewport.vp.maxZ);
-#endif
 #endif
 			}
 			CHECK_GL_ERROR_IF_DEBUG();
@@ -1077,35 +1016,10 @@ if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == Di
 		case GLRRenderCommand::SCISSOR:
 		{
 			int y = c.scissor.rc.y;
-			int x = c.scissor.rc.x;
-			if (!curFB_) {
-#if USE_ROTATE_90			
-if (g_display.rotation == DisplayRotation::ROTATE_90) {
-				//y = curFBHeight_ - y - c.scissor.rc.h;
-				//x = curFBWidth_ - x - c.scissor.rc.w;
-} else if (g_display.rotation == DisplayRotation::ROTATE_270) {
+			if (!curFB_)
 				y = curFBHeight_ - y - c.scissor.rc.h;
-				x = curFBWidth_ - x - c.scissor.rc.w;
-} else {
-				y = curFBHeight_ - y - c.scissor.rc.h;
-}
-#elif USE_ROTATE_270
-				y = curFBHeight_ - y - c.scissor.rc.h;
-				x = curFBWidth_ - x - c.scissor.rc.w;
-#else
-				y = curFBHeight_ - y - c.scissor.rc.h;
-#endif
-			}
 			if (scissorRc.x != c.scissor.rc.x || scissorRc.y != y || scissorRc.w != c.scissor.rc.w || scissorRc.h != c.scissor.rc.h) {
-#if USE_ROTATE_90 || USE_ROTATE_270
-if (g_display.rotation == DisplayRotation::ROTATE_90 || g_display.rotation == DisplayRotation::ROTATE_270) {
-				glScissor(y, x, c.scissor.rc.h, c.scissor.rc.w);
-} else {
 				glScissor(c.scissor.rc.x, y, c.scissor.rc.w, c.scissor.rc.h);
-}
-#else
-				glScissor(c.scissor.rc.x, y, c.scissor.rc.w, c.scissor.rc.h);
-#endif
 				scissorRc.x = c.scissor.rc.x;
 				scissorRc.y = y;
 				scissorRc.w = c.scissor.rc.w;

@@ -45,9 +45,6 @@ struct Vertex {
 };
 
 FRect GetScreenFrame(float pixelWidth, float pixelHeight) {
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<<<<GetScreenFrame %f, %f\n", pixelWidth, pixelHeight);
-#endif
 	FRect rc = FRect{
 		0.0f,
 		0.0f,
@@ -89,9 +86,6 @@ void CalculateDisplayOutputRect(FRect *rc, float origW, float origH, const FRect
 
 	float origRatio = !rotated ? origW / origH : origH / origW;
 	float frameRatio = frame.w / frame.h;
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<<<< CalculateDisplayOutputRect origRatio=%f, frameRatio=%f, scale=%f, aspectRatioAdjust=%f, offsetX=%f, offsetY=%f\n", origRatio, frameRatio, scale, aspectRatioAdjust, offsetX, offsetY);
-#endif
 
 	if (stretch) {
 		// Automatically set aspect ratio to match the display, IF the rotation matches the output display ratio! Otherwise, just
@@ -164,9 +158,6 @@ void CalculateDisplayOutputRect(FRect *rc, float origW, float origH, const FRect
 		rc->w = floorf(outW);
 		rc->h = floorf(outH);
 	}
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<< CalculateDisplayOutputRect rc: %f, %f, %f, %f\n", rc->x, rc->y, rc->w, rc->h);
-#endif
 }
 
 PresentationCommon::PresentationCommon(Draw::DrawContext *draw) : draw_(draw) {
@@ -400,9 +391,6 @@ bool PresentationCommon::BuildPostShader(const ShaderInfo * shaderInfo, const Sh
 			CalculateDisplayOutputRect(&rc, 480.0f, 272.0f, frame, g_Config.iInternalScreenRotation);
 			nextWidth = (int)rc.w;
 			nextHeight = (int)rc.h;
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<BuildPostShader %d, %d\n", nextWidth, nextHeight);
-#endif			
 		}
 
 		if (!AllocateFramebuffer(nextWidth, nextHeight)) {
@@ -645,9 +633,6 @@ void PresentationCommon::UpdateUniforms(bool hasVideo) {
 }
 
 void PresentationCommon::CopyToOutput(OutputFlags flags, int uvRotation, float u0, float v0, float u1, float v1) {
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<<<<<<< CopyToOutput %f, %f, %f, %f\n", u0, v0, u1, v1);
-#endif
 	draw_->Invalidate(InvalidationFlags::CACHED_RENDER_STATE);
 
 	// TODO: If shader objects have been created by now, we might have received errors.
@@ -920,9 +905,6 @@ void PresentationCommon::CopyToOutput(OutputFlags flags, int uvRotation, float u
 	draw_->BindSamplerStates(1, 1, &sampler);
 
 	auto setViewport = [&](float x, float y, float w, float h) {
-#if USE_ROTATE_90 || USE_ROTATE_270
-//printf("<<<<<<<<<<<< setViewport %f, %f, %f, %f\n", x, y, w, h);	
-#endif
 		Draw::Viewport viewport{ x, y, w, h, 0.0f, 1.0f };
 		draw_->SetViewport(viewport);
 	};

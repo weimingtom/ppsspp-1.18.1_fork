@@ -189,22 +189,12 @@ static void StopSDLAudioDevice() {
 
 static void UpdateScreenDPI(SDL_Window *window) {
 	int drawable_width, window_width;
-#if USE_ROTATE_90 || USE_ROTATE_270
-	SDL_GetWindowSize(window, NULL, &window_width);
-
-	if (g_Config.iGPUBackend == (int)GPUBackend::OPENGL)
-		SDL_GL_GetDrawableSize(window, NULL, &drawable_width);
-	else if (g_Config.iGPUBackend == (int)GPUBackend::VULKAN)
-		SDL_Vulkan_GetDrawableSize(window, NULL, &drawable_width);
-#else
 	SDL_GetWindowSize(window, &window_width, NULL);
 
 	if (g_Config.iGPUBackend == (int)GPUBackend::OPENGL)
 		SDL_GL_GetDrawableSize(window, &drawable_width, NULL);
 	else if (g_Config.iGPUBackend == (int)GPUBackend::VULKAN)
 		SDL_Vulkan_GetDrawableSize(window, &drawable_width, NULL);
-#endif
-
 
 	// Round up a little otherwise there would be a gap sometimes
 	// in fractional scaling
@@ -549,10 +539,8 @@ int64_t System_GetPropertyInt(SystemProperty prop) {
 		return KEYBOARD_LAYOUT_QWERTY;
 	}
 	case SYSPROP_DISPLAY_XRES:
-printf("<<<<<<< SYSPROP_DISPLAY_XRES==%d\n", g_DesktopWidth);
 		return g_DesktopWidth;
 	case SYSPROP_DISPLAY_YRES:
-printf("<<<<<<< SYSPROP_DISPLAY_YRES==%d\n", g_DesktopHeight);
 		return g_DesktopHeight;
 	default:
 		return -1;
@@ -759,7 +747,7 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 		g_QuitRequested = 1;
 		break;
 
-#if !defined(MOBILE_DEVICE) && !USE_HIDE_SDL_SHOWCURSOR
+#if !defined(MOBILE_DEVICE)
 	case SDL_WINDOWEVENT:
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_SIZE_CHANGED:  // better than RESIZED, more general
@@ -778,11 +766,8 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 			bool fullscreen = (window_flags & SDL_WINDOW_FULLSCREEN);
 
 			// This one calls NativeResized if the size changed.
-#if USE_ROTATE_90 || USE_ROTATE_270
-			UpdateScreenScale(new_height_px, new_width_px);
-#else
 			UpdateScreenScale(new_width_px, new_height_px);
-#endif
+
 			// Set variable here in case fullscreen was toggled by hotkey
 			if (g_Config.UseFullScreen() != fullscreen) {
 				g_Config.bFullScreen = fullscreen;
@@ -842,45 +827,7 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 			}
 			key.keyCode = mapped->second;
 			key.deviceId = DEVICE_ID_KEYBOARD;
-printf("<<<<<<<<<<<<SDL_KEYDOWN, %d, %d\n", event.key.keysym.sym, key.keyCode);
-#if 0
-#if USE_ROTATE_90 || USE_ROTATE_270
-if (key.keyCode == 44) {
-//Press 'P'
-if (1) {
-	g_display.rotation = DisplayRotation::ROTATE_0;
-	g_display.rot_matrix.setIdentity();
-UpdateScreenScale(272, 480);
-} else {
-	g_display.rotation = DisplayRotation::ROTATE_90;
-	g_display.rot_matrix.setRotationZ90();
-UpdateScreenScale(272, 272);
-}
-
-}
-#endif
-#endif
 			NativeKey(key);
-
-#if 0
-//only for test
-//P:44->Down:20
-if (key.keyCode == 44) { //Press Key P to emulate press key Down Arrow
-	std::thread t([]() {
-		KeyInput key;
-		key.flags = KEY_DOWN;
-		key.keyCode = (InputKeyCode)20;
-		key.deviceId = DEVICE_ID_KEYBOARD;
-		NativeKey(key);
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));		
-		key.flags = KEY_UP;
-		key.keyCode = (InputKeyCode)20;
-		key.deviceId = DEVICE_ID_KEYBOARD;
-		NativeKey(key);
-	});
-	t.detach();
-}
-#endif
 
 #ifdef _DEBUG
 			if (k == SDLK_F7) {
@@ -914,7 +861,6 @@ if (key.keyCode == 44) { //Press Key P to emulate press key Down Arrow
 		}
 	case SDL_KEYUP:
 		{
-printf("<<<<<<<<<<<<SDL_KEYUP, %d\n", event.key.keysym.sym);
 			if (event.key.repeat > 0) { break;}
 			int k = event.key.keysym.sym;
 			KeyInput key;
@@ -1175,7 +1121,7 @@ void UpdateTextFocus() {
 }
 
 void UpdateSDLCursor() {
-#if !defined(MOBILE_DEVICE) && !USE_HIDE_SDL_SHOWCURSOR
+#if !defined(MOBILE_DEVICE)
 	if (lastUIState != GetUIState()) {
 		lastUIState = GetUIState();
 		if (lastUIState == UISTATE_INGAME && g_Config.UseFullScreen() && !g_Config.bShowTouchControls)
@@ -1326,25 +1272,10 @@ int main(int argc, char *argv[]) {
 #if defined(MOBILE_DEVICE) && !PPSSPP_PLATFORM(SWITCH)
 	mode |= SDL_WINDOW_FULLSCREEN;
 #elif defined(USING_FBDEV) || PPSSPP_PLATFORM(SWITCH) || NO_SDLVULKAN
-#if !PC_NO_FULLSCREEN //added
 	mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 #else
-//not run here, pc, skip, added
-mode &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
-mode &= ~SDL_WINDOW_FULLSCREEN;
-//mode |= SDL_WINDOW_RESIZABLE;
-#endif
-
-#else
-#if !PC_NO_FULLSCREEN //added
 	mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 //	mode |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-#else
-//pc, skip, added
-mode &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
-mode &= ~SDL_WINDOW_FULLSCREEN;
-//mode |= SDL_WINDOW_RESIZABLE;
-#endif
 #endif
 
 	if (mode & SDL_WINDOW_FULLSCREEN_DESKTOP) {
@@ -1414,18 +1345,6 @@ mode &= ~SDL_WINDOW_FULLSCREEN;
 	if (g_Config.UseFullScreen())
 		mode |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-#if 1
-#if USE_ROTATE_90
-	g_display.rotation = DisplayRotation::ROTATE_90;
-	g_display.rot_matrix.setRotationZ90();
-	//std::swap(g_display.pixel_xres, g_display.pixel_yres);
-#elif USE_ROTATE_270	
-	g_display.rotation = DisplayRotation::ROTATE_270;
-	g_display.rot_matrix.setRotationZ270();
-	//std::swap(g_display.pixel_xres, g_display.pixel_yres);
-#endif
-#endif
-
 	int x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(getDisplayNumber());
 	int y = SDL_WINDOWPOS_UNDEFINED;
 	int w = g_display.pixel_xres;
@@ -1449,20 +1368,6 @@ mode &= ~SDL_WINDOW_FULLSCREEN;
 	if (g_Config.iGPUBackend == (int)GPUBackend::VULKAN && !vulkanMayBeAvailable) {
 		g_Config.iGPUBackend = (int)GPUBackend::OPENGL;
 	}
-
-#if PC_NO_FULLSCREEN //added
-	w = 480;
-	h = 272;
-
-#if 1
-#if USE_ROTATE_90 || USE_ROTATE_270
-	std::swap(w, h);
-#endif
-#endif
-
-#endif
-
-
 
 	std::string error_message;
 	if (g_Config.iGPUBackend == (int)GPUBackend::OPENGL) {
@@ -1517,11 +1422,7 @@ mode &= ~SDL_WINDOW_FULLSCREEN;
 
 	float dpi_scale = 1.0f / (g_ForcedDPI == 0.0f ? g_DesktopDPI : g_ForcedDPI);
 
-#if USE_ROTATE_90 || USE_ROTATE_270
-	UpdateScreenScale(h * g_DesktopDPI, w * g_DesktopDPI);
-#else
 	UpdateScreenScale(w * g_DesktopDPI, h * g_DesktopDPI);
-#endif
 
 	bool mainThreadIsRender = g_Config.iGPUBackend == (int)GPUBackend::OPENGL;
 
@@ -1556,7 +1457,7 @@ mode &= ~SDL_WINDOW_FULLSCREEN;
 	// OK, we have a valid graphics backend selected. Let's clear the failures.
 	g_Config.sFailedGPUBackends.clear();
 
-#if defined(MOBILE_DEVICE) || USE_HIDE_SDL_SHOWCURSOR
+#ifdef MOBILE_DEVICE
 	SDL_ShowCursor(SDL_DISABLE);
 #endif
 

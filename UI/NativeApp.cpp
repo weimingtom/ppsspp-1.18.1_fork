@@ -1194,22 +1194,12 @@ void NativeFrame(GraphicsContext *graphicsContext) {
 		g_BackgroundAudio.Play();
 
 		float refreshRate = System_GetPropertyFloat(SYSPROP_DISPLAY_REFRESH_RATE);
-if (refreshRate == 0) { //FIXME:GPM280Z2 bug:
-	refreshRate = 60.0;
-}
 		// Simple throttling to not burn the GPU in the menu.
 		// TODO: This should move into NativeFrame. Also, it's only necessary in MAILBOX or IMMEDIATE presentation modes.
 		double diffTime = time_now_d() - startTime;
 		int sleepTime = (int)(1000.0 / refreshRate) - (int)(diffTime * 1000.0);
-#if !NO_NATIVE_FRAME_SLEEP
-//printf("<<<<<<%f, %ld, %ld", refreshRate, diffTime, sleepTime);
-//fflush(stdout);
-//FIXME:GPM280Z2 bug: 0.000000, -1399889408, 1071102627
 		if (sleepTime > 0)
 			sleep_ms(sleepTime);
-#else
-sleep_ms(1);
-#endif
 	}
 }
 

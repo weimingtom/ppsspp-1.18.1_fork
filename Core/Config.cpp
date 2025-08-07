@@ -365,7 +365,6 @@ static int DefaultInternalResolution() {
 #elif PPSSPP_PLATFORM(IOS)
 	return 2;
 #else
-#if 1
 	if (System_GetPropertyInt(SYSPROP_DEVICE_TYPE) == DEVICE_TYPE_VR) {
 		return 4;
 	}
@@ -373,9 +372,6 @@ static int DefaultInternalResolution() {
 	int scale = longestDisplaySide >= 1000 ? 2 : 1;
 	INFO_LOG(Log::G3D, "Longest display side: %d pixels. Choosing scale %d", longestDisplaySide, scale);
 	return scale;
-#else
-	return 1;
-#endif	
 #endif
 }
 
