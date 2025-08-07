@@ -8,7 +8,7 @@
 *.dll
 *.rar
 *.exe
-*.map
+#*.map
 *.lib
 *.user
 *.sdf
@@ -41,7 +41,7 @@ PPSSPPDebug64.exe.manifest
 PPSSPPDebug.exe.manifest
 PPSSPPDebugARM64.exe.manifest
 PPSSPPDebugARM.exe.manifest
-assets/flash0
+#assets/flash0
 UWP/icph
 UWP/*.ipch
 UWP/Content/*
