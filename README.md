@@ -5,6 +5,49 @@ Try to cross compile PPSSPP 1.18.1 GLES no X11 version
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/README.md  
 * https://github.com/hrydgard/ppsspp/blob/v1.18.1/history.md  
 
+## Bugs  
+* (done) Too slow
+```
+Use -O3, and use -DNDEBUG instead of -D_DEBUG (too many log make it slow)
+```
+* (done) imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
+```
+Fixed
+see Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
+
+can use usleep(100) or printf() to solve this problem
+I use std::mutex to solve it
+
+crash in Core/HLE/sceMpeg.cpp:906
+free(): double free detected in tcache 2
+
+Fixed here:
+~H264Frames()
+void add(const u8 *str, int sz)
+```
+* Toheart2 psp crash, need to disable buffer (but also crash?)      
+* (done) imouto.iso voice sound delay is bad (but music is good)
+* LR肩键无效，AB键交换，
+* (done) 人物声音变尖（但背景音却正常）  
+* For TRIMUI SMART PRO version building, vulkan does not work when running
+
+## TODO  
+* (done) Remove ext\armips\Tests\Core\Includes\??asm  
+* (done) Change to -O3 -g0
+```
+Fixed, see upper imouto.iso bug  
+
+Makefile
+#-O3 -g0 some games will crash
+CCFLAGS += -O0 -g3
+```
+* (done) Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
+```
+use START+SELECT to emulate MENU button, see USE_EMULATE_MENU_BUTTON  
+use Joystick to emulate dpad, see USE_MOTION_AS_JOYBUTTON  
+```
+* (changed ? not sync) assets/redump.csv  
+
 ## Original code compare
 * ppsspp-1.18.1.tar.xz  
 No code changed, but not include dependencies  
@@ -127,48 +170,6 @@ https://github.com/hrydgard/ppsspp/issues/16630
 * (or use cmake) sudo apt install cmake
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; make -f ppsspp_v2.mk; make -j8
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; . ./ppsspp_v2.sh; make -j8
-
-## Bugs  
-* (done) Too slow
-```
-Use -O3, and use -DNDEBUG instead of -D_DEBUG (too many log make it slow)
-```
-* (done) imouto.iso (实妹相伴的大泉君psp移植版) too slow (especially audio delay) and sometimes crash  
-```
-Fixed
-see Core/HLE/sceMpeg.cpp, use std::mutex to fix this bug
-
-can use usleep(100) or printf() to solve this problem
-I use std::mutex to solve it
-
-crash in Core/HLE/sceMpeg.cpp:906
-free(): double free detected in tcache 2
-
-Fixed here:
-~H264Frames()
-void add(const u8 *str, int sz)
-```
-* Toheart2 psp crash, need to disable buffer (but also crash?)      
-* (done) imouto.iso voice sound delay is bad (but music is good)
-* LR肩键无效，AB键交换，
-* (done) 人物声音变尖（但背景音却正常）  
-
-## TODO  
-* (done) Remove ext\armips\Tests\Core\Includes\??asm  
-* (done) Change to -O3 -g0
-```
-Fixed, see upper imouto.iso bug  
-
-Makefile
-#-O3 -g0 some games will crash
-CCFLAGS += -O0 -g3
-```
-* (done) Support Raspberry Pi Zero 2 W and Waveshare GPM280Z2
-```
-use START+SELECT to emulate MENU button, see USE_EMULATE_MENU_BUTTON  
-use Joystick to emulate dpad, see USE_MOTION_AS_JOYBUTTON  
-```
-* (changed ? not sync) assets/redump.csv  
 
 # Build ffmpeg, only for official ppsspp code      
 ```
