@@ -126,13 +126,10 @@ private:
 };
 
 AudioDecoder *CreateAudioDecoder(PSPAudioType audioType, int sampleRateHz, int channels, size_t blockAlign, const uint8_t *extraData, size_t extraDataSize) {
+ERROR_LOG(Log::ME, "CreateAudioDecoder audioType==%d (mps==%d)", audioType, PSP_CODEC_MP3);
 	switch (audioType) {
-	case PSP_CODEC_MP3:
-#if 0
-		return new MiniMp3Audio();
-#else
-		return new FFmpegAudioDecoder(audioType, sampleRateHz, channels);
-#endif
+	//case PSP_CODEC_MP3:
+	//	return new MiniMp3Audio();
 	case PSP_CODEC_AT3:
 		return CreateAtrac3Audio(channels, blockAlign, extraData, extraDataSize);
 	case PSP_CODEC_AT3PLUS:
@@ -164,7 +161,7 @@ static int GetAudioCodecID(int audioType) {
 
 FFmpegAudioDecoder::FFmpegAudioDecoder(PSPAudioType audioType, int sampleRateHz, int channels)
 	: audioType(audioType), sample_rate_(sampleRateHz), channels_(channels) {
-
+ERROR_LOG(Log::ME, "FFmpegAudioDecoder::FFmpegAudioDecoder sampleRateHz==%d", sampleRateHz);
 #ifdef USE_FFMPEG
 #if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(58, 18, 100)
 	avcodec_register_all();
@@ -203,6 +200,7 @@ FFmpegAudioDecoder::FFmpegAudioDecoder(PSPAudioType audioType, int sampleRateHz,
 }
 
 bool FFmpegAudioDecoder::OpenCodec(int block_align) {
+ERROR_LOG(Log::ME, "FFmpegAudioDecoder::OpenCodec");
 #ifdef USE_FFMPEG
 	// Some versions of FFmpeg require this set.  May be set in SetExtraData(), but optional.
 	// When decoding, we decode by packet, so we know the size.
@@ -259,6 +257,7 @@ FFmpegAudioDecoder::~FFmpegAudioDecoder() {
 
 // Decodes a single input frame.
 bool FFmpegAudioDecoder::Decode(const uint8_t *inbuf, int inbytes, int *inbytesConsumed, int outputChannels, int16_t *outbuf, int *outSamples) {
+//ERROR_LOG(Log::ME, "FFmpegAudioDecoder::Decode");
 #ifdef USE_FFMPEG
 	if (!codecOpen_) {
 		OpenCodec(inbytes);
