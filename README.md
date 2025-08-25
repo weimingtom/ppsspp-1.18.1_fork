@@ -171,7 +171,7 @@ https://github.com/hrydgard/ppsspp/issues/16630
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; make -f ppsspp_v2.mk; make -j8
 * (or use cmake) cd build; make -f ppsspp_v2.mk clean; . ./ppsspp_v2.sh; make -j8
 
-# Build ffmpeg, only for official ppsspp code      
+## Build ffmpeg, only for official ppsspp code      
 ```
 cd ffmpeg  
 
@@ -185,10 +185,10 @@ PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_r
 PATH=/home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin:$PATH ./linux_armhf.sh
 ```
 
-# sleep bug for rpi32 (rpizero2w), waveshare gpm280z2     
+## Sleep bug for rpi32 (rpizero2w), waveshare gpm280z2     
 * see UI/NativeApp.cpp, NO_NATIVE_FRAME_SLEEP  
 
-# How to launch in Retropie for Waveshare GPM2804 without mc (File Manager) 
+## How to launch in Retropie for Waveshare GPM2804 without mc (File Manager) 
 ```
 找到方法解决GPM2804运行PPSSPP和运行onscripter没有声音输出的问题——
 方法是不用mc（树莓派retropie上的一个文件管理器）运行，
@@ -245,7 +245,7 @@ and then run PPSSPP in retropie menu
 /home/pi/pi/work_ppsspp/ppsspp_rpi32_1181/PPSSPPSDL
 ```
 
-# rotate 90 degrees (270 degrees) with two states in GPM2804   
+## Rotate 90 degrees (270 degrees) with two states in GPM2804   
 * rotate 90 degrees (270 degrees) with two states, 双状态旋转90度   
 * Another method is rotating 90 degrees but using Software Rendering (Slow)  
 * weibo record  
