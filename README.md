@@ -149,8 +149,9 @@ Fixed here:
 void add(const u8 *str, int sz)
 ```
 * Toheart2 psp crash, need to disable buffer (but also crash?)      
-* imouto.iso voice sound delay is bad (but music is good)
-* LR肩键无效，AB键交换，人物声音变尖（但背景音却正常）  
+* (done) imouto.iso voice sound delay is bad (but music is good)
+* LR肩键无效，AB键交换，
+* (done) 人物声音变尖（但背景音却正常）  
 
 ## TODO  
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
@@ -680,4 +681,29 @@ PPSSPP旋转90度研究。我测试用gpm2804运行我的旋转90度双状态的
 一个是对话框显示似乎会有延迟，另一个是LR肩键按下去也有一些画面闪烁。
 而我的魔改版就问题更多了，LR肩键无效，AB键交换，人物声音变尖
 （但背景音却正常），不知道能否改好这些问题，暂时还是不如R36S版
+```
+
+## Fix MP3 sound bug (character voice in imouto.iso)  
+* https://github.com/hrydgard/ppsspp/issues/5654
+* Use FFmpegAudioDecoder instead of MiniMp3Audio
+* https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/Core/HW/SimpleAudioDec.cpp
+* https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/steamdeck/Core/HW/SimpleAudioDec.cpp
+```
+AudioDecoder *CreateAudioDecoder(PSPAudioType audioType, int sampleRateHz, int channels, size_t blockAlign, const uint8_t *extraData, size_t extraDataSize) {
+	switch (audioType) {
+	case PSP_CODEC_MP3:
+#if 0
+		return new MiniMp3Audio();
+#else
+		return new FFmpegAudioDecoder(audioType, sampleRateHz, channels);
+#endif
+	case PSP_CODEC_AT3:
+		return CreateAtrac3Audio(channels, blockAlign, extraData, extraDataSize);
+	case PSP_CODEC_AT3PLUS:
+		return CreateAtrac3PlusAudio(channels, blockAlign);
+	default:
+		// Only AAC falls back to FFMPEG now.
+		return new FFmpegAudioDecoder(audioType, sampleRateHz, channels);
+	}
+}
 ```
