@@ -128,7 +128,11 @@ private:
 AudioDecoder *CreateAudioDecoder(PSPAudioType audioType, int sampleRateHz, int channels, size_t blockAlign, const uint8_t *extraData, size_t extraDataSize) {
 	switch (audioType) {
 	case PSP_CODEC_MP3:
+#if 0
 		return new MiniMp3Audio();
+#else
+		return new FFmpegAudioDecoder(audioType, sampleRateHz, channels);
+#endif
 	case PSP_CODEC_AT3:
 		return CreateAtrac3Audio(channels, blockAlign, extraData, extraDataSize);
 	case PSP_CODEC_AT3PLUS:
