@@ -35,6 +35,8 @@
 #include "Core/KeyMap.h"
 #include "Core/KeyMapDefaults.h"
 
+int g_isSteamDeck = 0;
+
 namespace KeyMap {
 
 // We actually need to lock g_controllerMap since it can be modified! Crashes will probably be rare though,
@@ -741,8 +743,12 @@ void RestoreDefault() {
 #elif PPSSPP_PLATFORM(IOS)
 	SetDefaultKeyMap(DEFAULT_MAPPING_IOS_PAD, false);
 #else
-	SetDefaultKeyMap(DEFAULT_MAPPING_KEYBOARD, true);
-	SetDefaultKeyMap(DEFAULT_MAPPING_PAD, false);
+	if (!g_isSteamDeck) {
+		SetDefaultKeyMap(DEFAULT_MAPPING_KEYBOARD, true);
+		SetDefaultKeyMap(DEFAULT_MAPPING_PAD, false);
+	} else {
+		SetDefaultKeyMap(DEFAULT_MAPPING_PAD, true);	
+	}
 #endif
 }
 

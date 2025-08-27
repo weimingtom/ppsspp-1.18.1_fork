@@ -1,0 +1,18 @@
+1)(deck@steamdeck build)$ ./PPSSPPSDL
+DEBUG: Vulkan is not available, not using Vulkan.
+Info: We compiled against SDL version 2.0.10, but we are linking against SDL version 2.30.11., be aware that this can lead to unexpected behaviors
+ThreadManager::Init(compute threads: 8, all: 16)
+37:20:467 Core/Config.cpp:373 I[G3D]: Longest display side: 1280 pixels. Choosing scale 2
+OpenGL 2.0 or higher.
+INFO: Supported mappings:
+INFO:
+INFO: Controller 0: Steam Deck (guid 0300f617de2800000512000000026800, VID 0x28de, PID 0x1205)
+INFO: There are 1 game controller(s) attached (1 joystick(s))
+loading control pad mappings from gamecontrollerdb.txt: SUCCESS!
+found control pad: Steam Deck, loading mapping: SUCCESS, mapping is:
+0300f617de2800000512000000026800,Steam Deck,a:b0,b:b1,x:b2,y:b3,back:b4,guide:b5,start:b6,leftstick:b7,rightstick:b8,leftshoulder:b9,rightshoulder:b10,dpup:b11,dpdown:b12,dpleft:b13,dpright:b14,misc1:b15,paddle1:b16,paddle2:b17,paddle3:b18,paddle4:b19,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:a4,righttrigger:a5,platform:Linux
+pad 1 has been assigned to control pad: Steam Deck
+found control pad: Steam Deck, loading mapping: SUCCESS, mapping is:
+0300f617de2800000512000000026800,Steam Deck,a:b0,b:b1,x:b2,y:b3,back:b4,guide:b5,start:b6,leftstick:b7,rightstick:b8,leftshoulder:b9,rightshoulder:b10,dpup:b11,dpdown:b12,dpleft:b13,dpright:b14,misc1:b15,paddle1:b16,paddle2:b17,paddle3:b18,paddle4:b19,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:a4,righttrigger:a5,platform:Linux
+
+

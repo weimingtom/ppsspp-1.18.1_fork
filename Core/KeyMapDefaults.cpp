@@ -9,6 +9,8 @@
 
 #include "Core/HLE/sceCtrl.h"
 
+extern int g_isSteamDeck;
+
 namespace KeyMap {
 
 struct DefMappingStruct {
@@ -279,6 +281,31 @@ static const DefMappingStruct defaultPadMap[] = {
 	{VIRTKEY_PAUSE       , NKCODE_BUTTON_L2 },
 };
 
+static const DefMappingStruct defaultPadMapSteamDeck[] = {
+	{CTRL_CROSS          , NKCODE_BUTTON_2},
+	{CTRL_CIRCLE         , NKCODE_BUTTON_3},
+	{CTRL_SQUARE         , NKCODE_BUTTON_4},
+	{CTRL_TRIANGLE       , NKCODE_BUTTON_1},
+	{CTRL_UP             , NKCODE_DPAD_UP},
+	{CTRL_RIGHT          , NKCODE_DPAD_RIGHT},
+	{CTRL_DOWN           , NKCODE_DPAD_DOWN},
+	{CTRL_LEFT           , NKCODE_DPAD_LEFT},
+	{CTRL_START          , NKCODE_BUTTON_10},
+	{CTRL_SELECT         , NKCODE_BUTTON_9},
+#if 1
+	{CTRL_LTRIGGER       , NKCODE_BUTTON_6},
+	{CTRL_RTRIGGER       , NKCODE_BUTTON_5},
+#endif
+	{VIRTKEY_AXIS_X_MIN, JOYSTICK_AXIS_X, -1},
+	{VIRTKEY_AXIS_X_MAX, JOYSTICK_AXIS_X, +1},
+	{VIRTKEY_AXIS_Y_MIN, JOYSTICK_AXIS_Y, +1},
+	{VIRTKEY_AXIS_Y_MAX, JOYSTICK_AXIS_Y, -1},
+#if 1
+	{VIRTKEY_FASTFORWARD  , NKCODE_BUTTON_THUMBL},
+	{VIRTKEY_PAUSE       , NKCODE_BUTTON_THUMBR},
+#endif
+};
+
 static const DefMappingStruct defaultPadMapIOS[] = {
 	{CTRL_CROSS          , NKCODE_BUTTON_2},
 	{CTRL_CIRCLE         , NKCODE_BUTTON_3},
@@ -402,7 +429,11 @@ void SetDefaultKeyMap(DefaultMaps dmap, bool replace) {
 		SetDefaultKeyMap(DEVICE_ID_PAD_0, defaultMOQI7SKeyMap, ARRAY_SIZE(defaultMOQI7SKeyMap), replace);
 		break;
 	case DEFAULT_MAPPING_PAD:
-		SetDefaultKeyMap(DEVICE_ID_PAD_0, defaultPadMap, ARRAY_SIZE(defaultPadMap), replace);
+		if (!g_isSteamDeck) {
+			SetDefaultKeyMap(DEVICE_ID_PAD_0, defaultPadMap, ARRAY_SIZE(defaultPadMap), replace);
+		} else {
+			SetDefaultKeyMap(DEVICE_ID_PAD_0, defaultPadMapSteamDeck, ARRAY_SIZE(defaultPadMapSteamDeck), replace);		
+		}
 		break;
 	case DEFAULT_MAPPING_ANDROID_PAD:
 		SetDefaultKeyMap(DEVICE_ID_PAD_0, defaultPadMapAndroid, ARRAY_SIZE(defaultPadMapAndroid), replace);

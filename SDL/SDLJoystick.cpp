@@ -13,6 +13,9 @@
 
 using namespace std;
 
+extern int g_isSteamDeck;
+extern int g_isLoadControlsFailed;
+
 static int SDLJoystickEventHandlerWrapper(void* userdata, SDL_Event* event)
 {
 	static_cast<SDLJoystick *>(userdata)->ProcessInput(*event);
@@ -40,6 +43,66 @@ SDLJoystick::SDLJoystick(bool init_SDL ) : registeredAsEventHandler(false) {
 	} else {
 		cout << "gamecontrollerdb.txt missing" << endl;
 	}
+	
+//------------------------	
+//see test/testgamecontroller.c
+int i = 0;
+int nController = 0;
+char guid[64];
+
+    /* Print information about the mappings */
+    if (1) {//(!argv[1]) {
+        SDL_Log("Supported mappings:\n");
+        for (i = 0; i < SDL_GameControllerNumMappings(); ++i) {
+            char *mapping = SDL_GameControllerMappingForIndex(i);
+            if (mapping) {
+                //SDL_Log("\t%s\n", mapping);
+                SDL_free(mapping);
+            }
+        }
+        SDL_Log("\n");
+    }	
+    /* Print information about the controller */
+    for (i = 0; i < SDL_NumJoysticks(); ++i) {
+        const char *name;
+        const char *description;
+
+        SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i),
+                                  guid, sizeof (guid));
+
+        if ( SDL_IsGameController(i) )
+        {
+            nController++;
+            name = SDL_GameControllerNameForIndex(i);
+            description = "Controller";
+        } else {
+            name = SDL_JoystickNameForIndex(i);
+            description = "Joystick";
+        }
+        SDL_Log("%s %d: %s (guid %s, VID 0x%.4x, PID 0x%.4x)\n",
+            description, i, name ? name : "Unknown", guid,
+            SDL_JoystickGetDeviceVendor(i), SDL_JoystickGetDeviceProduct(i));
+	
+#if 1
+	if (name && 0 == strcmp(name, "Steam Deck"))
+	{
+		g_isSteamDeck = 1;
+		SDL_Log("<<< Found Steam Deck, g_isSteamDeck = 1\n");
+if (g_isLoadControlsFailed == 1) {
+	SDL_Log("<<< Found Steam Deck, g_isSteamDeck = 1, RestoreDefault again\n");
+	//RestoreDefault again
+	KeyMap::RestoreDefault();
+}
+	}
+#endif
+
+
+    }
+    SDL_Log("There are %d game controller(s) attached (%d joystick(s))\n", nController, SDL_NumJoysticks());
+
+//see test/testgamecontroller.c	
+//-----------------------	
+	
 	cout << "SUCCESS!" << endl;
 	setUpControllers();
 }
