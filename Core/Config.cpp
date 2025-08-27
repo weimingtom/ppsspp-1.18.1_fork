@@ -57,6 +57,9 @@
 #include "Core/Instance.h"
 #include "GPU/Common/FramebufferManagerCommon.h"
 
+extern int g_isSteamDeck;
+int g_isLoadControlsFailed = 0;
+
 // TODO: Find a better place for this.
 http::RequestManager g_DownloadManager;
 
@@ -1875,13 +1878,20 @@ void Config::unloadGameConfig() {
 
 void Config::LoadStandardControllerIni() {
 	IniFile controllerIniFile;
+//like this: $HOME/.config/ppsspp/PSP/SYSTEM/controls.ini
+printf(">>> begin Config::LoadStandardControllerIni: %s\n", controllerIniFilename_.c_str());
+printf(">>> g_isSteamDeck == %d\n", g_isSteamDeck);
 	if (!controllerIniFile.Load(controllerIniFilename_)) {
+printf(">>> after 1 Config::LoadStandardControllerIni\n");
+g_isLoadControlsFailed = 1;
 		ERROR_LOG(Log::Loader, "Failed to read %s. Setting controller config to default.", controllerIniFilename_.c_str());
 		KeyMap::RestoreDefault();
 	} else {
+printf(">>> after 2 Config::LoadStandardControllerIni\n");
 		// Continue anyway to initialize the config. It will just restore the defaults.
 		KeyMap::LoadFromIni(controllerIniFile);
 	}
+printf(">>> end Config::LoadStandardControllerIni\n");
 }
 
 void Config::ResetControlLayout() {
