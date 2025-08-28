@@ -709,7 +709,15 @@ AudioDecoder *CreateAudioDecoder(PSPAudioType audioType, int sampleRateHz, int c
 }
 ```
 
-## Steam Deck default key mapping
+## Adding Steam Deck default key mapping
+* Steam Deck Keymap My Changes (differences from default linux pad keymap)  
+```
+Remove all keyboard keymaps, and no ESC keyboard keymap
+L==pad.b6;
+R==pad.b5;
+Accelerate==pad.ThumbL(Left joystick press);
+Pause(a.k.a. PPSSPP Menu)==pad.ThumbR(Right joystick press) 
+```
 * https://github.com/weimingtom/ppsspp-1.18.1_fork/blob/master/Core/Config.cpp
 ```
 void Config::LoadStandardControllerIni() {
