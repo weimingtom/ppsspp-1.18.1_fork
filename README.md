@@ -73,6 +73,14 @@ make MIYOO=2 clean && make MIYOO=2 -j8
 ```
 make MIYOO=0 clean && make MIYOO=0 -j8  
 ```
+* For Steam Deck or on Xubuntu 20.04 64bit
+```
+cd build; cmake ..; make -j8; cd ..
+```
+* For Steam Deck or on Xubuntu 20.04 64bit, using GLES2 and able to run without X11
+```
+make MIYOO=10 clean && make MIYOO=10 -j8
+```
 
 ## Cross compile toolchains and staging files    
 * For aarch64, like Trimui Smart Pro and Trimui Brick   

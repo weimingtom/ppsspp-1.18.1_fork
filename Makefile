@@ -1,3 +1,4 @@
+# 10==steam deck
 # 6==waveshare gpm2804, raspberry pi cm4
 # 5==waveshare gpm280z2, raspberry pi zero2w
 # 4==raspberry pi 4b 64bit, 1.18.1
@@ -19,7 +20,12 @@ MIYOO:=0
 #see SDL/SDLJoystick.cpp
 
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+CC := gcc
+CPP := g++
+AR := ar cru
+RANLIB := ranlib
+else ifeq ($(MIYOO),6)
 CC  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc -march=armv7-a -mtune=cortex-a72 -mfpu=neon-vfpv4 -mfloat-abi=hard
 CPP := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -march=armv7-a -mtune=cortex-a72 -mfpu=neon-vfpv4 -mfloat-abi=hard
 AR  := /home/wmt/work_a30/gcc-linaro-7.5.0-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ar cru
@@ -58,7 +64,13 @@ RM := rm -rf
 
 CCFLAGS :=
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+# For Steam Deck
+CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
+
+else ifeq ($(MIYOO),6)
 # For gpm2804
 CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
@@ -105,7 +117,8 @@ CCFLAGS += -O3 -g0
 CCFLAGS += -DNDEBUG
 endif
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+else ifeq ($(MIYOO),6)
 else ifeq ($(MIYOO),5)
 else ifeq ($(MIYOO),4)
 else ifeq ($(MIYOO),3)
@@ -139,7 +152,9 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR
+else ifeq ($(MIYOO),6)
 CCFLAGS += -DNO_SDLVULKAN=1 #
 ###CCFLAGS += -DPPSSPP_PLATFORM_RPI=1 #see cmake/Toolchains/raspberry.armv7.cmake, only for rpi zero2w, not for rpi cm4
 ###CCFLAGS += -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 #only for rpi zero2w, not for rpi cm4
@@ -231,7 +246,11 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+CCFLAGS += -isystem /usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/x86_64/include  
+CCFLAGS += -msse2 
+else ifeq ($(MIYOO),6)
 #FIXME:????-march
 CCFLAGS += -isystem /home/wmt/work_a30/staging_dir/target/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/armv7rpi32/include  
@@ -303,7 +322,17 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),6)
+ifeq ($(MIYOO),10)
+LDFLAGS += /usr/lib/x86_64-linux-gnu/libSDL2.so 
+LDFLAGS += /usr/lib/x86_64-linux-gnu/libz.so 
+LDFLAGS += /usr/lib/x86_64-linux-gnu/libEGL.so 
+LDFLAGS += /usr/lib/x86_64-linux-gnu/libGLESv2.so 
+LDFLAGS += ./ffmpeg/linux/x86_64/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/x86_64/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/x86_64/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/x86_64/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/x86_64/lib/libavutil.a
+else ifeq ($(MIYOO),6)
 LDFLAGS += -lSDL2 -lz -lGLESv2 -lEGL -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
