@@ -801,3 +801,25 @@ void SetDefaultKeyMap(DefaultMaps dmap, bool replace) {
 		}
 		break;
 ```
+* Weibo record
+```
+ppsspp研究，我试试晚上能不能解决steam deck的ppsspp键位问题——它的默认键位可能有问题，
+很可能是因为它把键盘也加入到键位里面，但steam deck的一个按键可能会同时对应手柄和键盘
+两者都有——当然这只是我猜测的原因，实际不清楚。别的linux掌机没这个问题，
+因为别的掌机例如trimui smart pro压根就不会产生键盘输入
+
+ppsspp研究，关于steam deck键位问题，我找到方法解决了，不过我不确定是否有别的问题，
+待测试。总体来说，就是要复制默认键位到另一个数组（KeyMapDefaults.cpp），
+然后修改L键、R键、加速键、暂停键（即PPSSPP菜单键）的键位，
+映射到正确的按键上（后两个按键我是映射到左摇杆拇指按下和右摇杆拇指按下），
+然后判断设备是否是steam deck，如果是就换成这个默认键位。至于怎么判断steam deck，
+我的做法是判断控制器的名称（具体代码参考SDL2的test代码，我是整段复制过来用的，
+ppsspp代码里面可能没有这样的判断）
+
+ppsspp研究，关于昨天steam deck检测和默认键位问题，
+我改了一下，改成检测steam deck和同时检测是否没有controls.ini配置文件。
+如果判断到当前属于没有配置文件而初始化了，则需要再复位一次键位以冲走前一次复位，
+因为如果不这样做，复位键位会在检测到steam deck控制器之前执行，
+就没办法复位到steam deck的默认键位
+```
+
