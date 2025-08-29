@@ -40,6 +40,11 @@ CC := gcc
 CPP := g++
 AR := ar cru
 RANLIB := ranlib
+else ifeq ($(MIYOO),3)
+CC  := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-gcc
+CPP := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-g++
+AR  := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-ar cru
+RANLIB := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-ranlib
 else ifeq ($(MIYOO),2)
 CC  := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-gcc
 CPP := /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-g++
@@ -181,10 +186,15 @@ CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
 CCFLAGS += -DUSE_EMULATE_MENU_BUTTON=1 # SDL/SDLJoystick.cpp
 else ifeq ($(MIYOO),4)
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
+else ifeq ($(MIYOO),3)
+CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DUSE_TSP_KEYMAP=1
 else ifeq ($(MIYOO),2)
 CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
 else ifeq ($(MIYOO),1)
 CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DUSE_ROTATE_90=1 -DUSE_ROTATE_90_TWO_STATE=1 
 else
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR #
 CCFLAGS += -DPC_NO_FULLSCREEN=1 #disable fullscreen
@@ -269,6 +279,10 @@ CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include
 CCFLAGS += -march=armv8-a+crc 
 CCFLAGS += -mtune=cortex-a72 
 CCFLAGS += -funsafe-math-optimizations
+else ifeq ($(MIYOO),3)
+CCFLAGS += -isystem /home/wmt/work_trimui/usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include  
+CCFLAGS += -I/home/wmt/work_trimui/usr/include
 else ifeq ($(MIYOO),2)
 CCFLAGS += -isystem /home/wmt/work_trimui/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include  
@@ -290,8 +304,16 @@ CCFLAGS += -fno-math-errno
 CCFLAGS += -fno-strict-aliasing 
 CCFLAGS += -pthread 
 
-
+ifeq ($(MIYOO),1)
+#/lib/libstdc++.so.6: version `CXXABI_1.3.11' not found
+# $ nm PPSSPPSDL | grep 1.3.11 | c++filt
+#         U operator delete(void*, unsigned int, std::align_val_t)@@CXXABI_1.3.11
+#         U operator delete(void*, std::align_val_t)@@CXXABI_1.3.11
+#         U operator new(unsigned int, std::align_val_t)@@CXXABI_1.3.11
+CCFLAGS += -std=gnu++17 -fno-aligned-new
+else
 CCFLAGS += -std=gnu++17
+endif
 
 
 CCFLAGS += -Wall 
@@ -354,6 +376,18 @@ LDFLAGS += /usr/lib/aarch64-linux-gnu/libICE.so
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libX11.so 
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libXext.so 
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libz.so
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
+else ifeq ($(MIYOO),3)
+LDFLAGS += /home/wmt/work_trimui/usr/lib/libSDL2.a 
+LDFLAGS += /home/wmt/work_trimui/usr/lib/libz.a
+LDFLAGS += /home/wmt/work_trimui/usr/lib/libEGL.so
+LDFLAGS += /home/wmt/work_trimui/usr/lib/libGLESv2.so 
+#for trimui brick
+LDFLAGS += -lIMGegl -lsrv_um -lusc -lglslcompiler -L/home/wmt/work_trimui/usr/lib
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a 
