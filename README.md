@@ -65,7 +65,7 @@ make MIYOO=6 clean && make MIYOO=6 -j8
 ```
 make MIYOO=5 clean && make MIYOO=5 -j8
 ```
-* For Trimui Smart Pro  
+* For Trimui Smart Pro or Trimui Brick  
 ```
 make MIYOO=2 clean && make MIYOO=2 -j8  
 ```
@@ -831,3 +831,38 @@ ppsspp研究，关于昨天steam deck检测和默认键位问题，
 就没办法复位到steam deck的默认键位
 ```
 
+## GPM280Z2 bug
+* UI/NativeApp.cpp
+```
+		float refreshRate = System_GetPropertyFloat(SYSPROP_DISPLAY_REFRESH_RATE);
+if (refreshRate == 0) { //FIXME:GPM280Z2 bug:
+	refreshRate = 60.0;
+}
+		// Simple throttling to not burn the GPU in the menu.
+		// TODO: This should move into NativeFrame. Also, it's only necessary in MAILBOX or IMMEDIATE presentation modes.
+		double diffTime = time_now_d() - startTime;
+		int sleepTime = (int)(1000.0 / refreshRate) - (int)(diffTime * 1000.0);
+#if !NO_NATIVE_FRAME_SLEEP
+//printf("<<<<<<%f, %ld, %ld", refreshRate, diffTime, sleepTime);
+//fflush(stdout);
+//FIXME:GPM280Z2 bug: 0.000000, -1399889408, 1071102627
+		if (sleepTime > 0)
+			sleep_ms(sleepTime);
+#else
+sleep_ms(1);
+#endif
+```
+
+
+## Trimui Smart Pro default keymapping
+* Core/KeyMapDefaults.cpp
+```
+#ifdef USE_TSP_KEYMAP
+//for Trimui Smart Pro or Trimui Brick
+	{CTRL_LTRIGGER       , NKCODE_BUTTON_6},
+	{CTRL_RTRIGGER       , NKCODE_BUTTON_5},
+#else
+	{CTRL_LTRIGGER       , NKCODE_BUTTON_7},
+	{CTRL_RTRIGGER       , NKCODE_BUTTON_8},
+#endif
+```

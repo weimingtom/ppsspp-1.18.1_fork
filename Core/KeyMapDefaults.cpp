@@ -273,8 +273,8 @@ static const DefMappingStruct defaultPadMap[] = {
 	{CTRL_SELECT         , NKCODE_BUTTON_9},
 #ifdef USE_TSP_KEYMAP
 //for Trimui Smart Pro or Trimui Brick
-	{CTRL_LTRIGGER       , NKCODE_BUTTON_5},
-	{CTRL_RTRIGGER       , NKCODE_BUTTON_6},
+	{CTRL_LTRIGGER       , NKCODE_BUTTON_6},
+	{CTRL_RTRIGGER       , NKCODE_BUTTON_5},
 #else
 	{CTRL_LTRIGGER       , NKCODE_BUTTON_7},
 	{CTRL_RTRIGGER       , NKCODE_BUTTON_8},
