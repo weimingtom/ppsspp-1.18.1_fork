@@ -82,6 +82,10 @@ cd build; cmake ..; make -j8; cd ..
 ```
 make MIYOO=10 clean && make MIYOO=10 -j8
 ```
+* (TODO) For R36S
+```
+make MIYOO=11 clean && make MIYOO=11 -j8
+```
 
 ## Cross compile toolchains and staging files    
 * For aarch64, like Trimui Smart Pro and Trimui Brick   
