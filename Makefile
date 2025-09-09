@@ -1,3 +1,4 @@
+# 11==r36s
 # 10==steam deck
 # 6==waveshare gpm2804, raspberry pi cm4
 # 5==waveshare gpm280z2, raspberry pi zero2w
@@ -20,7 +21,12 @@ MIYOO:=0
 #see SDL/SDLJoystick.cpp
 
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+CC  := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-gcc
+CPP := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-g++
+AR  := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-ar cru
+RANLIB := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-ranlib
+else ifeq ($(MIYOO),10)
 CC := gcc
 CPP := g++
 AR := ar cru
@@ -256,7 +262,11 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+CCFLAGS += -isystem /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include  
+CCFLAGS += -I/home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/include
+else ifeq ($(MIYOO),10)
 CCFLAGS += -isystem /usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/x86_64/include  
 CCFLAGS += -msse2 
@@ -344,7 +354,19 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+LDFLAGS += -lSDL2 
+LDFLAGS += -lz
+LDFLAGS += -lEGL
+LDFLAGS += -lGLESv2 
+#for r36s
+LDFLAGS += -lkms -lrga -L/home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/lib
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
+else ifeq ($(MIYOO),10)
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libSDL2.so 
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libz.so 
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libEGL.so 
