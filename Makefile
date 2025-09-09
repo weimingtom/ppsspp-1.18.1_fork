@@ -75,7 +75,13 @@ RM := rm -rf
 
 CCFLAGS :=
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+# For r36s
+CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
+
+else ifeq ($(MIYOO),10)
 # For Steam Deck
 CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
@@ -128,7 +134,8 @@ CCFLAGS += -O3 -g0
 CCFLAGS += -DNDEBUG
 endif
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+else ifeq ($(MIYOO),10)
 else ifeq ($(MIYOO),6)
 else ifeq ($(MIYOO),5)
 else ifeq ($(MIYOO),4)
@@ -163,7 +170,11 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),10)
+ifeq ($(MIYOO),11)
+CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
+CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
+else ifeq ($(MIYOO),10)
 CCFLAGS += -DVK_USE_PLATFORM_XLIB_KHR
 else ifeq ($(MIYOO),6)
 CCFLAGS += -DNO_SDLVULKAN=1 #
@@ -355,11 +366,11 @@ LDFLAGS += -pthread -lrt
 LDFLAGS += -ldl 
 
 ifeq ($(MIYOO),11)
+#for r36s
 LDFLAGS += -lSDL2 
 LDFLAGS += -lz
 LDFLAGS += -lEGL
 LDFLAGS += -lGLESv2 
-#for r36s
 LDFLAGS += -lkms -lrga -L/home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/lib
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
@@ -367,6 +378,7 @@ LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
 else ifeq ($(MIYOO),10)
+#for steam deck
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libSDL2.so 
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libz.so 
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libEGL.so 
@@ -377,6 +389,7 @@ LDFLAGS += ./ffmpeg/linux/x86_64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/x86_64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/x86_64/lib/libavutil.a
 else ifeq ($(MIYOO),6)
+#for gpm2804 (raspberry pi cm4, 32bit, rpi4 does not need /opt/vc/include and /opt/vc/lib)
 LDFLAGS += -lSDL2 -lz -lGLESv2 -lEGL -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
@@ -384,6 +397,7 @@ LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavutil.a
 else ifeq ($(MIYOO),5)
+#for gpm280z2 (raspberry pi zero2w, 32bit)
 LDFLAGS += -lSDL2 -lz -lbrcmGLESv2 -lbcm_host -lbrcmEGL -lvchiq_arm -lvcos -L./include/vc/lib -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavcodec.a 
@@ -391,7 +405,7 @@ LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/armv7rpi32/lib/libavutil.a
 else ifeq ($(MIYOO),4)
-#for raspberry pi 4b
+#for raspberry pi 4b (64bit, rpi4 does not need /opt/vc/include and /opt/vc/lib)
 LDFLAGS += -L/opt/vc/lib -lGLESv2 -lEGL
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libSM.so 
 LDFLAGS += /usr/lib/aarch64-linux-gnu/libICE.so 
@@ -404,11 +418,11 @@ LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
 else ifeq ($(MIYOO),3)
+#for trimui brick
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libSDL2.a 
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libz.a
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libEGL.so
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libGLESv2.so 
-#for trimui brick
 LDFLAGS += -lIMGegl -lsrv_um -lusc -lglslcompiler -L/home/wmt/work_trimui/usr/lib
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
@@ -416,11 +430,11 @@ LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
 else ifeq ($(MIYOO),2)
+#for trimui smart pro
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libSDL2.a 
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libz.a
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libEGL.so
 LDFLAGS += /home/wmt/work_trimui/usr/lib/libGLESv2.so 
-#for trimui smart pro
 LDFLAGS += -lIMGegl -lsrv_um -lusc -lglslcompiler -L/home/wmt/work_trimui/usr/lib
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
@@ -428,10 +442,6 @@ LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
 else ifeq ($(MIYOO),1)
-#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libSDL2.a 
-#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libz.a
-#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libEGL.so 
-#LDFLAGS += /home/wmt/work_a30/staging_dir/target/usr/lib/libGLESv2.so 
 #for miyoo a30
 LDFLAGS += -lSDL2 -lz -lGLESv2 -lEGL -L/home/wmt/work_a30/staging_dir/target/usr/lib
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavformat.a 
@@ -440,6 +450,7 @@ LDFLAGS += ./ffmpeg/linux/armv7/lib/libswresample.a
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libswscale.a 
 LDFLAGS += ./ffmpeg/linux/armv7/lib/libavutil.a
 else
+#for xubuntu 20.04
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libSDL2.so 
 LDFLAGS += /usr/lib/x86_64-linux-gnu/libz.so 
 #LDFLAGS += /usr/lib/x86_64-linux-gnu/libSDL2_test.a #-DUSING_SDL_TEST
