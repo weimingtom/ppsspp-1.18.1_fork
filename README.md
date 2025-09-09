@@ -90,8 +90,10 @@ make MIYOO=11 clean && make MIYOO=11 -j8
 ## Cross compile toolchains and staging files    
 * For aarch64, like Trimui Smart Pro and Trimui Brick   
 https://github.com/trimui/toolchain_sdk_smartpro/releases/tag/20231018  
+aarch64-linux-gnu-7.5.0-linaro.tgz, SDK_usr_tg5040_a133p.tgz  
 * For armv7-a, like Miyoo A30, Raspberry Pi 4B, Raspberry Pi 3B, Waveshare GPM280Z2, Waveshare GPM2804  
 https://github.com/XK9274/a30-sdk-miyoo/releases/tag/16042024  
+sdk_miyoo282_allwinnerA33.tgz, gcc-linaro-7.5.0-arm-linux-gnueabihf.tgz, staging_dir.tgz  
 * For R36S (aarch64)    
 aarch64-buildroot-linux-gnu_sdk-buildroot.tar.gz  
 from rg351p-toolchain,  
