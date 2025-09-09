@@ -32,6 +32,7 @@ void add(const u8 *str, int sz)
 * For TRIMUI SMART PRO version building, vulkan does not work when running
 
 ## TODO  
+* (TODO) ppsspp-go2-master.zip, compare with ppsspp_git_8940a9d_1.8.0_min.zip   
 * (done) Remove ext\armips\Tests\Core\Includes\??asm  
 * (done) Change to -O3 -g0
 ```
