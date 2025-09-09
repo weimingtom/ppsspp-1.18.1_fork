@@ -92,6 +92,12 @@ make MIYOO=11 clean && make MIYOO=11 -j8
 https://github.com/trimui/toolchain_sdk_smartpro/releases/tag/20231018  
 * For armv7-a, like Miyoo A30, Raspberry Pi 4B, Raspberry Pi 3B, Waveshare GPM280Z2, Waveshare GPM2804  
 https://github.com/XK9274/a30-sdk-miyoo/releases/tag/16042024  
+* For R36S (aarch64)    
+aarch64-buildroot-linux-gnu_sdk-buildroot.tar.gz  
+from rg351p-toolchain,  
+https://github.com/AdrienLombard/sm64-351elec-port/releases/tag/v1.0.0  
+* For Steam Deck (x86_64, amd64)    
+Use Xubuntu 20.04 gcc  
 
 ## References  
 * glgetstringi nullptr patch for Allwinners A133  
