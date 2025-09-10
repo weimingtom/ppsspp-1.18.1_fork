@@ -29,7 +29,7 @@ void add(const u8 *str, int sz)
 * (done) imouto.iso voice sound delay is bad (but music is good)
 * LR肩键无效，AB键交换，
 * (done) 人物声音变尖（但背景音却正常）  
-* For TRIMUI SMART PRO version building, vulkan does not work when running (see Makefile -D)
+* For TRIMUI SMART PRO version building, vulkan does not work when running (see Makefile -DNO_SDLVULKAN=1)
 * (TODO) R36S bug, weibo record
 ```
 ppsspp研究，我现在可以编译出能在R36S上运行的PPSSPP，
