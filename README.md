@@ -36,12 +36,12 @@ ppsspp研究，我现在可以编译出能在R36S上运行的PPSSPP，
 见屏幕右上角的版本号是unknown。不过我编译的版本有问题，
 (1) 例如SDL2鼠标箭头还在，
 (2) 而且和系统的PPSSPP共用同一个存储目录，
-(3) 需要两个动态so文件，
+(3) 需要两个动态so文件，(librga.so.2, libkms.so.1)
 所以可能还需要改一下。我找时间把Makefile修改内容更新到gh上，
 下次有机会打包成发布版 ​​​
 
 (4) 字体刷新似乎有卡顿，
-(5) 是否需要放入onscripter-jh-ordroid-go-advance的SDL2.so ??? 
+(5) 是否需要放入onscripter-jh-ordroid-go-advance的libSDL2.so ??? 
 ```
 
 ## TODO  
