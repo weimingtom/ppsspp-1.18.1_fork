@@ -892,3 +892,20 @@ sleep_ms(1);
 	{CTRL_RTRIGGER       , NKCODE_BUTTON_8},
 #endif
 ```
+
+## (TODO, just record) Play PSP Games on VisionFive 2!
+* https://forum.rvspace.org/t/play-psp-games-on-visionfive-2/3525/8
+```
+git clone --recurse-submodules https://github.com/hrydgard/ppsspp.git
+cd ppsspp
+cmake -DCMAKE_RELEASE_TYPE=Release -DUSING_EGL=ON -DUSING_GLES2=ON -GNinja -Bbuild -S. MIMALLOC_SHOW_ERRORS=0 mold --run cmake --build build -j4
+
+./build/PPSSPPSDL
+
+(rebuild SDL2 ?) ./configure --disable-video-opengl
+
+export QT_QPA_PLATFORM="wayland;xcb"
+export SDL_RENDER_DRIVER="opengles2"
+export SDL_VIDEO_GL_DRIVER='GLESv2_PVR_MESA'
+export MESA_LOADER_DRIVER_OVERRIDE="pvr"
+```
