@@ -909,3 +909,23 @@ export SDL_RENDER_DRIVER="opengles2"
 export SDL_VIDEO_GL_DRIVER='GLESv2_PVR_MESA'
 export MESA_LOADER_DRIVER_OVERRIDE="pvr"
 ```
+
+## (TODO, ref, just record) build PPSSPP (GLES, not OpenGL version) for VisionFive2
+* https://forum.rvspace.org/t/play-psp-games-on-visionfive-2/3525/12
+```
+sudo apt update 
+sudo apt install gedit
+sudo apt install libsdl2-dev libfreetype-dev libglfw3-dev
+sudo apt install gcc g++ make
+(not need?) sudo apt install libjpeg-dev
+(not need?) sudo apt install libbz2-dev
+sudo apt install cmake
+
+tar xzf ppsspp_1.16_min.tar.gz
+cd ppsspp/
+mkdir build
+cd build/
+cmake -DCMAKE_BUILD_TYPE=Release -DUSING_EGL=ON -DUSING_GLES2=ON ..
+make -j4
+./PPSSPPSDL
+```
