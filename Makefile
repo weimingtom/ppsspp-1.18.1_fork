@@ -1,3 +1,4 @@
+# 12==visionfive2
 # 11==r36s
 # 10==steam deck
 # 6==waveshare gpm2804, raspberry pi cm4
@@ -21,7 +22,12 @@ MIYOO:=0
 #see SDL/SDLJoystick.cpp
 
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+CC := gcc
+CPP := g++
+AR := ar cru
+RANLIB := ranlib
+else ifeq ($(MIYOO),11)
 CC  := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-gcc
 CPP := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-g++
 AR  := /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/bin/aarch64-buildroot-linux-gnu-ar cru
@@ -75,7 +81,13 @@ RM := rm -rf
 
 CCFLAGS :=
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+# For visionfive2
+CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
+
+else ifeq ($(MIYOO),11)
 # For r36s
 CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
@@ -134,7 +146,8 @@ CCFLAGS += -O3 -g0
 CCFLAGS += -DNDEBUG
 endif
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+else ifeq ($(MIYOO),11)
 else ifeq ($(MIYOO),10)
 else ifeq ($(MIYOO),6)
 else ifeq ($(MIYOO),5)
@@ -170,7 +183,11 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
+CCFLAGS += -DNO_SDLVULKAN=1 #
+#CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
+else ifeq ($(MIYOO),11)
 CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
 CCFLAGS += -DNO_SDLVULKAN=1 #
 CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
@@ -273,7 +290,10 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+CCFLAGS += -isystem /usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/riscv64/include  
+else ifeq ($(MIYOO),11)
 CCFLAGS += -isystem /home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include  
 CCFLAGS += -I/home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/include
@@ -365,7 +385,18 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),11)
+ifeq ($(MIYOO),12)
+#for visionfive2
+LDFLAGS += -lSDL2 
+LDFLAGS += -lz
+LDFLAGS += -lEGL
+LDFLAGS += -lGLESv2 
+LDFLAGS += ./ffmpeg/linux/riscv64/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/riscv64/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/riscv64/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/riscv64/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/riscv64/lib/libavutil.a
+else ifeq ($(MIYOO),11)
 #for r36s
 LDFLAGS += -lSDL2 
 LDFLAGS += -lz
