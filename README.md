@@ -101,13 +101,13 @@ make MIYOO=11 clean && make MIYOO=11 -j8
 ```
 
 ## Cross compile toolchains and staging files    
-* For aarch64, like Trimui Smart Pro and Trimui Brick   
+* For aarch64, like Trimui Smart Pro and Trimui Brick (aarch64, libIMGegl.so)      
 https://github.com/trimui/toolchain_sdk_smartpro/releases/tag/20231018  
 aarch64-linux-gnu-7.5.0-linaro.tgz, SDK_usr_tg5040_a133p.tgz  
 * For armv7-a, like Miyoo A30, Raspberry Pi 4B, Raspberry Pi 3B, Waveshare GPM280Z2, Waveshare GPM2804  
 https://github.com/XK9274/a30-sdk-miyoo/releases/tag/16042024  
 sdk_miyoo282_allwinnerA33.tgz, gcc-linaro-7.5.0-arm-linux-gnueabihf.tgz, staging_dir.tgz  
-* For R36S (aarch64)    
+* For R36S and Trimui Smart Pro S (aarch64, libmali.so)    
 aarch64-buildroot-linux-gnu_sdk-buildroot.tar.gz  
 from rg351p-toolchain,  
 https://github.com/AdrienLombard/sm64-351elec-port/releases/tag/v1.0.0  
@@ -928,4 +928,21 @@ cd build/
 cmake -DCMAKE_BUILD_TYPE=Release -DUSING_EGL=ON -DUSING_GLES2=ON ..
 make -j4
 ./PPSSPPSDL
+```
+
+## Trimui Smart Pro S
+* Toolchain, same as R36S RG351P cross compile gcc toolchain    
+```
+trimui smart pro s研究。已经搞完ons和ra核心，开始研究PPSSPP的闪退问题，
+好像是因为新的吹米s 全志A523用的gpu驱动是libmali.so（Mali-G57 MC1），
+而不是全志A133P的gpu IMG PowerVR GE8300‌（libIMGegl.so）。
+至于要怎么链接到libmali.so，我也不知道，需要研究——主要缺工具链，
+所以比较恼火和棘手
+
+trimui smart pro s研究。我好像找到方法编译运行这台掌机的PPSSPP了，方法是
+——它和r36s是通用的，我把我之前编译的rg351p交叉工具链编译出来的r36s版本
+的PPSSPP搬过来，改一下launch.sh即可（我复制了两个so动态库），
+运行区别是r36s会显示出左上角一个鼠标光标，但吹米s不会。
+为什么我会想到rg351p的工具链呢，反正全志A523和rk3326这俩都是
+libmali.so显卡驱动，八成是通用的，试一下果然如此，这也太舒适了
 ```
