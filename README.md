@@ -95,7 +95,7 @@ cd build; cmake ..; make -j8; cd ..
 ```
 make MIYOO=10 clean && make MIYOO=10 -j8
 ```
-* (TODO) For R36S
+* (TODO) For R36S and Trimui Smart Pro S
 ```
 make MIYOO=11 clean && make MIYOO=11 -j8
 ```
