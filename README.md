@@ -946,3 +946,11 @@ trimui smart pro s研究。我好像找到方法编译运行这台掌机的PPSSP
 为什么我会想到rg351p的工具链呢，反正全志A523和rk3326这俩都是
 libmali.so显卡驱动，八成是通用的，试一下果然如此，这也太舒适了
 ```
+* Built with offical sdk sdk_tg5050_linux_v1.0.0.tgz  
+https://github.com/trimui/toolchain_sdk_smartpro_s/releases/tag/20251208  
+toolchain sdk 20251208 Latest  
+```
+我测试过用trimui smart pro s的sdk编译PPSSPP 1.18.1我的魔改版也可以在掌机上运行
+（不需要像r36s那样复制两个so文件），不过我编译过程中需要加上-lmali，否则会链接失败，
+我怀疑可能有一些错误的OpenGL符号被我编译进来了，这个问题等以后有时间再研究
+```
