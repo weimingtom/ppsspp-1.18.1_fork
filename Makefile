@@ -1,5 +1,6 @@
+# 13==official trimui smart pro s sdk
 # 12==visionfive2
-# 11==r36s
+# 11==r36s and unofficial trimui smart pro s
 # 10==steam deck
 # 6==waveshare gpm2804, raspberry pi cm4
 # 5==waveshare gpm280z2, raspberry pi zero2w
@@ -21,8 +22,12 @@ MIYOO:=0
 #found control pad: X360 Controller, loading mapping: SUCCESS, mapping is:
 #see SDL/SDLJoystick.cpp
 
-
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+CC  := /home/wmt/sdk_tg5050_linux_v1.0.0/host/bin/aarch64-none-linux-gnu-gcc
+CPP := /home/wmt/sdk_tg5050_linux_v1.0.0/host/bin/aarch64-none-linux-gnu-g++
+AR  := /home/wmt/sdk_tg5050_linux_v1.0.0/host/bin/aarch64-none-linux-gnu-ar cru
+RANLIB := /home/wmt/sdk_tg5050_linux_v1.0.0/host/bin/aarch64-none-linux-gnu-ranlib
+else ifeq ($(MIYOO),12)
 CC := gcc
 CPP := g++
 AR := ar cru
@@ -81,7 +86,13 @@ RM := rm -rf
 
 CCFLAGS :=
 
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+# For trimui smart pro s
+CCFLAGS += -O3 -g0
+#CCFLAGS += -D_DEBUG
+CCFLAGS += -DNDEBUG
+
+else ifeq ($(MIYOO),12)
 # For visionfive2
 CCFLAGS += -O3 -g0
 #CCFLAGS += -D_DEBUG
@@ -146,7 +157,8 @@ CCFLAGS += -O3 -g0
 CCFLAGS += -DNDEBUG
 endif
 
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+else ifeq ($(MIYOO),12)
 else ifeq ($(MIYOO),11)
 else ifeq ($(MIYOO),10)
 else ifeq ($(MIYOO),6)
@@ -183,7 +195,11 @@ CCFLAGS += -DUSE_DISCORD=1 #
 CCFLAGS += -DUSE_FFMPEG=1 #
 CCFLAGS += -DUSING_GLES2 #
 
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
+CCFLAGS += -DNO_SDLVULKAN=1 #
+CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
+else ifeq ($(MIYOO),12)
 CCFLAGS += -DUSE_HIDE_SDL_SHOWCURSOR=1 # SDL/SDLMain.cpp
 CCFLAGS += -DNO_SDLVULKAN=1 #
 #CCFLAGS += -DUSE_TSP_KEYMAP=1 #L:pad.b4, R:pad.b5
@@ -290,7 +306,11 @@ CCFLAGS += -isystem /opt/vc/include
 CCFLAGS += -isystem /opt/vc/include/interface/vcos/pthreads 
 CCFLAGS += -isystem /opt/vc/include/interface/vmcx_host/linux
 
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+CCFLAGS += -isystem /home/wmt/sdk_tg5050_linux_v1.0.0/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/SDL2
+CCFLAGS += -isystem ./ffmpeg/linux/aarch64/include  
+CCFLAGS += -I/home/wmt/sdk_tg5050_linux_v1.0.0/host/aarch64-buildroot-linux-gnu/sysroot/usr/include
+else ifeq ($(MIYOO),12)
 CCFLAGS += -isystem /usr/include/SDL2
 CCFLAGS += -isystem ./ffmpeg/linux/riscv64/include  
 else ifeq ($(MIYOO),11)
@@ -385,7 +405,20 @@ LDFLAGS += -pthread -lrt
 
 LDFLAGS += -ldl 
 
-ifeq ($(MIYOO),12)
+ifeq ($(MIYOO),13)
+#for trimui smart pro s
+LDFLAGS += -lSDL2 
+LDFLAGS += -lz
+LDFLAGS += -lEGL
+LDFLAGS += -lGLESv2 
+LDFLAGS += -lmali -L/home/wmt/work_r36s/aarch64-buildroot-linux-gnu_sdk-buildroot/aarch64-buildroot-linux-gnu/sysroot/usr/lib
+#-lkms -lrga 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavformat.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavcodec.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswresample.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libswscale.a 
+LDFLAGS += ./ffmpeg/linux/aarch64/lib/libavutil.a
+else ifeq ($(MIYOO),12)
 #for visionfive2
 LDFLAGS += -lSDL2 
 LDFLAGS += -lz
