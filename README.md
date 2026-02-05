@@ -103,6 +103,11 @@ make MIYOO=11 clean && make MIYOO=11 -j8
 ```
 make MIYOO=13 clean && make MIYOO=13 -j8
 ```
+* For Miniloong (require Xubuntu 25.04, Xubuntu 20.04 not supported)  
+```
+sudo apt install patchelf  
+make MIYOO=14 clean && make MIYOO=14 -j8  
+```
 
 ## Cross compile toolchains and staging files    
 * For aarch64, like Trimui Smart Pro and Trimui Brick (aarch64, libIMGegl.so)      
