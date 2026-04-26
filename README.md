@@ -1,5 +1,5 @@
 # ppsspp-1.18.1_fork
-Try to cross compile PPSSPP 1.18.1 GLES no X11 version (a.k.a. EGL)  
+Try to cross compile PPSSPP 1.18.1 GLES no X11 version (a.k.a. EGL, enable USING_EGL and USING_GLES2)   
 **Also, you can use 'cmake -DUSING_EGL=ON -DUSING_GLES2=ON' for original ppsspp sources, like VisionFive2, but I make some changes for me.**  
 
 ## Original Readme  
