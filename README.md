@@ -106,7 +106,7 @@ sudo apt update
 sudo apt install gedit
 sudo apt install libsdl2-dev libfreetype-dev libglfw3-dev
 sudo apt install gcc g++ make
-make MIYOO=15 clean && make MIYOO=12 -j4  
+make MIYOO=12 clean && make MIYOO=12 -j4  
 ```
 * For Trimui Smart Pro S (require Xubuntu 25.04, not supported Xubuntu 20.04)  
 ```
