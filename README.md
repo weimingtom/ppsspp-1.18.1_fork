@@ -100,6 +100,14 @@ make MIYOO=10 clean && make MIYOO=10 -j8
 ```
 make MIYOO=11 clean && make MIYOO=11 -j8
 ```
+* For VisionFive2
+```
+sudo apt update 
+sudo apt install gedit
+sudo apt install libsdl2-dev libfreetype-dev libglfw3-dev
+sudo apt install gcc g++ make
+make MIYOO=15 clean && make MIYOO=12 -j4  
+```
 * For Trimui Smart Pro S (require Xubuntu 25.04, not supported Xubuntu 20.04)  
 ```
 make MIYOO=13 clean && make MIYOO=13 -j8
@@ -111,8 +119,10 @@ make MIYOO=14 clean && make MIYOO=14 -j8
 ```
 * For Arduino Uno Q (4 cores, 4GB RAM 32GB eMMC)  
 ```
-sudo apt install gcc g++ make  
-sudo apt install libSDL2-dev
+sudo apt update 
+sudo apt install gedit
+sudo apt install libsdl2-dev libfreetype-dev libglfw3-dev
+sudo apt install gcc g++ make
 make MIYOO=15 clean && make MIYOO=15 -j4  
 ```
 
