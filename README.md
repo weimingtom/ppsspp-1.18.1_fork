@@ -109,6 +109,12 @@ make MIYOO=13 clean && make MIYOO=13 -j8
 sudo apt install patchelf  
 make MIYOO=14 clean && make MIYOO=14 -j8  
 ```
+* For Arduino Uno Q (4 cores, 4GB RAM 32GB eMMC)  
+```
+sudo apt install gcc g++ make  
+sudo apt install libSDL2-dev
+make MIYOO=15 clean && make MIYOO=15 -j4  
+```
 
 ## Cross compile toolchains and staging files    
 * For aarch64, like Trimui Smart Pro and Trimui Brick (aarch64, libIMGegl.so)      
